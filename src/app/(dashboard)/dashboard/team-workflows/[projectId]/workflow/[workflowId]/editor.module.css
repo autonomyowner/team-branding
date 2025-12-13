@@ -1,0 +1,733 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 80px);
+  margin: -24px;
+  outline: none;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  gap: 24px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.backLink {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.backLink:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.backLink svg {
+  width: 20px;
+  height: 20px;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.workflowMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusBadge {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusBadge.draft {
+  background: rgba(138, 138, 138, 0.2);
+  color: var(--text-muted);
+}
+
+.statusBadge.active {
+  background: rgba(123, 237, 159, 0.2);
+  color: var(--status-completed);
+}
+
+.nodeCount {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.unsaved {
+  font-size: 12px;
+  color: var(--priority-high);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.presenceRow {
+  display: flex;
+  align-items: center;
+}
+
+.presenceAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #000;
+  border: 2px solid var(--bg-secondary);
+  margin-left: -8px;
+}
+
+.presenceAvatar:first-child {
+  margin-left: 0;
+}
+
+.connectingHint {
+  font-size: 12px;
+  color: var(--accent);
+  padding: 6px 12px;
+  background: rgba(0, 255, 242, 0.1);
+  border-radius: 4px;
+}
+
+.zoomControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-elevated);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.zoomControls button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.zoomControls button:hover {
+  background: var(--bg-secondary);
+}
+
+.zoomControls span {
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
+.saveBtn {
+  padding: 8px 20px;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: var(--bg-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveBtn:hover {
+  background: var(--accent-dim);
+}
+
+/* Editor Layout */
+.editorLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Palette */
+.palette {
+  width: 200px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.palette h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 16px 0;
+}
+
+.nodeTypes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nodeTypeBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.nodeTypeBtn:hover {
+  border-color: var(--border-highlight);
+  transform: translateX(4px);
+}
+
+.nodeTypeDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.paletteHelp {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.paletteHelp p {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0 0 6px 0;
+}
+
+/* Canvas */
+.canvas {
+  flex: 1;
+  background: var(--bg-primary);
+  overflow: hidden;
+  position: relative;
+  cursor: default;
+}
+
+.canvas.connecting {
+  cursor: crosshair;
+}
+
+.canvas.panning {
+  cursor: grabbing;
+}
+
+.canvasContent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+}
+
+.grid {
+  position: absolute;
+  inset: -5000px;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.canvasEmpty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Edges */
+.edgesSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.edge {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  pointer-events: stroke;
+  cursor: pointer;
+  transition: stroke-width 0.2s ease;
+}
+
+.edge:hover {
+  stroke-width: 3;
+}
+
+/* Nodes */
+.node {
+  position: absolute;
+  width: 140px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.node:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.node.selected {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.nodeHeader {
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #000;
+  border-radius: 6px 6px 0 0;
+}
+
+.nodeBody {
+  padding: 12px;
+}
+
+.nodeLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.nodeDesc {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Handles */
+.handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.handleSource {
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  color: #000;
+}
+
+.handleSource:hover {
+  transform: scale(1.2);
+}
+
+.handleSource svg {
+  width: 12px;
+  height: 12px;
+}
+
+.handleTarget {
+  background: var(--bg-elevated);
+  border: 2px solid var(--accent);
+}
+
+.handleTop {
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.handleBottom {
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.handleLeft {
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.handleRight {
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.deleteNodeBtn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--priority-critical);
+  border: 2px solid var(--bg-card);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteNodeBtn svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.modal {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.formGroup textarea {
+  resize: vertical;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.cancelBtn,
+.submitBtn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.cancelBtn:hover {
+  border-color: var(--text-muted);
+}
+
+.submitBtn {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--bg-primary);
+}
+
+.submitBtn:hover {
+  background: var(--accent-dim);
+}
+
+/* Tool Mode Section */
+.toolButtons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.toolBtn {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolBtn:hover {
+  border-color: var(--border-highlight);
+}
+
+.toolBtn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+}
+
+/* Container drawing cursor */
+.canvas.drawingMode {
+  cursor: crosshair;
+}
+
+/* Containers */
+.containerBox {
+  position: absolute;
+  border: 2px dashed;
+  border-radius: 12px;
+  cursor: move;
+  z-index: 1;
+  transition: box-shadow 0.2s ease;
+}
+
+.containerBox:hover {
+  box-shadow: 0 0 0 1px var(--border-highlight);
+}
+
+.selectedContainer {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.containerLabel {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Resize Handles */
+.resizeHandle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 2px;
+  z-index: 10;
+}
+
+.resizeN {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.resizeS {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.resizeE {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.resizeW {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.resizeNE {
+  top: -5px;
+  right: -5px;
+  cursor: nesw-resize;
+}
+
+.resizeNW {
+  top: -5px;
+  left: -5px;
+  cursor: nwse-resize;
+}
+
+.resizeSE {
+  bottom: -5px;
+  right: -5px;
+  cursor: nwse-resize;
+}
+
+.resizeSW {
+  bottom: -5px;
+  left: -5px;
+  cursor: nesw-resize;
+}
+
+.deleteContainerBtn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--priority-critical);
+  border: 2px solid var(--bg-card);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteContainerBtn svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Drawing Preview */
+.drawingPreview {
+  position: absolute;
+  border: 2px dashed var(--accent);
+  background: rgba(0, 255, 242, 0.1);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Color Picker Grid */
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.colorOption {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.colorOption:hover {
+  transform: scale(1.1);
+}
+
+.colorOption.selectedColor {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--accent);
+}
