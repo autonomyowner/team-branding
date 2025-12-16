@@ -178,38 +178,53 @@ export default function TeamWorkflowDashboard() {
   const phases = workflowData?.phases || INITIAL_PHASES;
 
   const toggleTask = async (phaseId: string, taskId: string) => {
-    if (!workflowData) return;
-
     // Find current task status
     const phase = phases.find((p) => p.id === phaseId);
     const task = phase?.tasks.find((t) => t.id === taskId);
     if (!task) return;
 
-    // Toggle task status in Convex
-    await updateTaskStatusMutation({
-      workflowId: workflowData._id,
-      phaseId,
-      taskId,
-      completed: !task.completed,
-      editedBy: user?.name || "Anonymous",
-    });
+    try {
+      // If workflow doesn't exist yet, initialize it first
+      let workflowId = workflowData?._id;
+      if (!workflowId) {
+        workflowId = await initializeWorkflow({
+          workspaceId: undefined,
+          phases: INITIAL_PHASES,
+        });
+      }
 
-    // Data will auto-update via Convex real-time query
+      // Toggle task status in Convex
+      await updateTaskStatusMutation({
+        workflowId,
+        phaseId,
+        taskId,
+        completed: !task.completed,
+        editedBy: user?.name || "Anonymous",
+      });
+      // Data will auto-update via Convex real-time query
+    } catch (error) {
+      console.error("Error toggling task:", error);
+    }
   };
 
   const handleAddTask = async (phaseId: string) => {
-    if (!workflowData) {
-      console.error("No workflow data available");
-      return;
-    }
     if (!newTaskText.trim()) {
       console.error("Task text is empty");
       return;
     }
 
     try {
+      // If workflow doesn't exist yet, initialize it first
+      let workflowId = workflowData?._id;
+      if (!workflowId) {
+        workflowId = await initializeWorkflow({
+          workspaceId: undefined,
+          phases: INITIAL_PHASES,
+        });
+      }
+
       await addTaskMutation({
-        workflowId: workflowData._id,
+        workflowId,
         phaseId,
         task: {
           text: newTaskText.trim(),
@@ -229,32 +244,56 @@ export default function TeamWorkflowDashboard() {
   };
 
   const handleEditTask = async (phaseId: string, taskId: string) => {
-    if (!workflowData || !editTaskText.trim()) return;
+    if (!editTaskText.trim()) return;
 
-    await updateTaskMutation({
-      workflowId: workflowData._id,
-      phaseId,
-      taskId,
-      updates: {
-        text: editTaskText.trim(),
-        textAr: editTaskText.trim(),
-      },
-      editedBy: user?.name || "Anonymous",
-    });
+    try {
+      // If workflow doesn't exist yet, initialize it first
+      let workflowId = workflowData?._id;
+      if (!workflowId) {
+        workflowId = await initializeWorkflow({
+          workspaceId: undefined,
+          phases: INITIAL_PHASES,
+        });
+      }
 
-    setEditingTask(null);
-    setEditTaskText("");
+      await updateTaskMutation({
+        workflowId,
+        phaseId,
+        taskId,
+        updates: {
+          text: editTaskText.trim(),
+          textAr: editTaskText.trim(),
+        },
+        editedBy: user?.name || "Anonymous",
+      });
+
+      setEditingTask(null);
+      setEditTaskText("");
+    } catch (error) {
+      console.error("Error editing task:", error);
+    }
   };
 
   const handleDeleteTask = async (phaseId: string, taskId: string) => {
-    if (!workflowData) return;
+    try {
+      // If workflow doesn't exist yet, initialize it first
+      let workflowId = workflowData?._id;
+      if (!workflowId) {
+        workflowId = await initializeWorkflow({
+          workspaceId: undefined,
+          phases: INITIAL_PHASES,
+        });
+      }
 
-    await deleteTaskMutation({
-      workflowId: workflowData._id,
-      phaseId,
-      taskId,
-      editedBy: user?.name || "Anonymous",
-    });
+      await deleteTaskMutation({
+        workflowId,
+        phaseId,
+        taskId,
+        editedBy: user?.name || "Anonymous",
+      });
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   };
 
   const startEditing = (phaseId: string, task: Task) => {
