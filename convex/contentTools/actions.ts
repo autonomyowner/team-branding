@@ -10,15 +10,18 @@ export const enhancePrompt = action({
     userId: v.optional(v.string()),
   },
   handler: async (ctx, args): Promise<{ generationId: Id<"contentGenerations">; enhancedPrompt: string }> => {
+    console.log("enhancePrompt called with args:", args);
     const { internal } = await import("../_generated/api");
     const { userPrompt, type, userId } = args;
 
+    console.log("Creating generation record...");
     // Create generation record via internal mutation
     const generationId = await ctx.runMutation(internal.contentTools.mutations.createGeneration, {
       userPrompt,
       type,
       userId,
     });
+    console.log("Generation record created:", generationId);
 
     // Call OpenRouter Haiku API for prompt enhancement
     const enhancementTemplate = type === "image"
@@ -51,11 +54,13 @@ Then output an enhanced video concept with clear sections:
 - ENGAGEMENT: (call-to-action, retention tactics)`;
 
     try {
+      console.log("Checking API key...");
       // Check if API key is configured
       if (!process.env.OPENROUTER_API_KEY) {
         throw new Error("OPENROUTER_API_KEY environment variable is not set");
       }
 
+      console.log("Calling OpenRouter API...");
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -92,6 +97,7 @@ Then output an enhanced video concept with clear sections:
       }
 
       const enhancedPrompt = data.choices[0].message.content;
+      console.log("Enhanced prompt received, updating record...");
 
       // Update generation record via internal mutation
       await ctx.runMutation(internal.contentTools.mutations.updateGeneration, {
@@ -100,10 +106,13 @@ Then output an enhanced video concept with clear sections:
         status: "generating",
       });
 
+      console.log("Successfully completed enhancePrompt");
       return { generationId, enhancedPrompt };
     } catch (error: any) {
       const errorMessage = error.message || "Unknown error occurred during prompt enhancement";
-      console.error("enhancePrompt error:", errorMessage, error);
+      console.error("enhancePrompt error:", errorMessage);
+      console.error("Error stack:", error.stack);
+      console.error("Full error object:", JSON.stringify(error, null, 2));
 
       await ctx.runMutation(internal.contentTools.mutations.updateGeneration, {
         generationId,
