@@ -8,7 +8,9 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { isConvexConfigured } from "@/convex/ConvexClientProvider";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 // Types
 export interface User {
@@ -201,12 +203,67 @@ function useLocalStorageAuth() {
 // TODO: Convex auth will be enabled after running `npx convex dev`
 // Once Convex is configured, you can use Convex Auth for real authentication
 
+// Convex Auth hook
+function useConvexAuth() {
+  const { signIn, signOut } = useAuthActions();
+  const currentUserId = useQuery(api.auth.users.currentUser);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  const user = currentUserId ? {
+    id: currentUserId,
+    email: "",
+    name: "User",
+    isGuest: false
+  } : null;
+
+  useEffect(() => {
+    if (currentUserId !== undefined) {
+      setIsLoading(false);
+    }
+  }, [currentUserId]);
+
+  const login = async (email: string, password: string) => {
+    // OAuth only - this is a placeholder
+    return { success: false, error: "Please use OAuth login" };
+  };
+
+  const signup = async (data: SignupData) => {
+    // OAuth only - this is a placeholder
+    return { success: false, error: "Please use OAuth signup" };
+  };
+
+  const logout = () => {
+    void signOut();
+    router.push("/login");
+  };
+
+  const continueAsGuest = () => {
+    router.push("/dashboard");
+  };
+
+  const updateUser = (data: Partial<User>) => {
+    // TODO: Implement with Convex mutation
+  };
+
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+    isGuest: false,
+    login,
+    signup,
+    logout,
+    continueAsGuest,
+    updateUser,
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Always use localStorage auth for now (Convex auth will be integrated later)
-  const localStorageAuth = useLocalStorageAuth();
+  const convexAuth = useConvexAuth();
 
   return (
-    <AuthContext.Provider value={localStorageAuth}>
+    <AuthContext.Provider value={convexAuth}>
       {children}
     </AuthContext.Provider>
   );

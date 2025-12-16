@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as auth from "../auth.js";
 import type * as auth_users from "../auth/users.js";
 import type * as canvas_mutations from "../canvas/mutations.js";
 import type * as canvas_queries from "../canvas/queries.js";
@@ -25,6 +26,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   "auth/users": typeof auth_users;
   "canvas/mutations": typeof canvas_mutations;
   "canvas/queries": typeof canvas_queries;

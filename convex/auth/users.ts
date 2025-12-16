@@ -1,16 +1,11 @@
-// @ts-nocheck
-/* eslint-disable */
 import { query, mutation } from "../_generated/server";
 import { v } from "convex/values";
-
-// Simplified user functions without Convex Auth
-// Auth is handled by localStorage on the frontend for now
+import { auth } from "../auth";
 
 export const currentUser = query({
   args: {},
   handler: async (ctx) => {
-    // Return null - auth handled on frontend
-    return null;
+    return await auth.getUserId(ctx);
   },
 });
 

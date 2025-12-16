@@ -1,15 +1,18 @@
-// @ts-nocheck
-/* eslint-disable */
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
+  // ============ AUTH TABLES (Convex Auth) ============
+  ...authTables,
+
   // ============ USERS ============
   users: defineTable({
-    email: v.string(),
-    name: v.string(),
+    email: v.optional(v.string()),
+    name: v.optional(v.string()),
     avatarUrl: v.optional(v.string()),
-    isActive: v.boolean(),
+    isActive: v.optional(v.boolean()),
+    // Convex Auth adds: image, emailVerified, etc.
   })
     .index("by_email", ["email"]),
 
