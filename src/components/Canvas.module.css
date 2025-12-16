@@ -290,15 +290,90 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: default;
+  user-select: none;
+}
+
+.canvas.panning {
+  cursor: grabbing !important;
+}
+
+/* Canvas Content Wrapper (for zoom/pan transform) */
+.canvasContent {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.canvasContent > * {
+  pointer-events: all;
 }
 
 .canvas.addingMode {
   cursor: crosshair;
 }
 
+/* Zoom Controls */
+.zoomControls {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+}
+
+.zoomButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.zoomButton:hover {
+  background: var(--bg-hover);
+  border-color: var(--vermillion);
+  color: var(--vermillion);
+  transform: scale(1.1);
+}
+
+.zoomButton:active {
+  transform: scale(0.95);
+}
+
+.zoomLevel {
+  padding: var(--space-2);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--vermillion);
+  background: var(--accent-subtle);
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
 .canvasGrid {
   position: absolute;
-  inset: 0;
+  width: 10000px;
+  height: 10000px;
+  left: -5000px;
+  top: -5000px;
   background-image:
     linear-gradient(var(--border-subtle) 1px, transparent 1px),
     linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
@@ -310,9 +385,13 @@
 /* Connection SVG */
 .connectionsSvg {
   position: absolute;
-  inset: 0;
+  width: 10000px;
+  height: 10000px;
+  left: -5000px;
+  top: -5000px;
   pointer-events: none;
   z-index: 1;
+  overflow: visible;
 }
 
 /* ==========================================
@@ -325,8 +404,9 @@
   border-radius: var(--radius-md);
   cursor: move;
   user-select: none;
-  transition: all var(--duration-fast) ease;
+  transition: box-shadow var(--duration-fast) ease, z-index 0s;
   z-index: 5;
+  will-change: transform;
 }
 
 .node:hover {
@@ -343,6 +423,15 @@
   box-shadow: 0 0 0 3px var(--vermillion), var(--shadow-glow-red);
   animation: pulse 1.5s ease-in-out infinite;
   z-index: 20;
+}
+
+.node.dragging {
+  cursor: grabbing !important;
+  opacity: 0.85;
+  transition: none !important;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 2px currentColor;
+  transform-origin: center;
 }
 
 /* Node Header */

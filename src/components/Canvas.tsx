@@ -46,7 +46,15 @@ export default function Canvas() {
   const [showAssigneeMenu, setShowAssigneeMenu] = useState<string | null>(null);
   const [showPriorityMenu, setShowPriorityMenu] = useState<string | null>(null);
   const [connectingFrom, setConnectingFrom] = useState<string | null>(null);
+
+  // Zoom and Pan state
+  const [zoom, setZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+
   const canvasRef = useRef<HTMLDivElement>(null);
+  const canvasContentRef = useRef<HTMLDivElement>(null);
 
   // Convex real-time query
   const canvasData = useQuery(api.sharedCanvas.get, { roomId: "default" });
@@ -77,12 +85,19 @@ export default function Canvas() {
     blocker: "#ef4444",   // red
   };
 
+  // Transform screen coordinates to canvas coordinates (accounting for zoom and pan)
+  const screenToCanvas = (screenX: number, screenY: number) => {
+    if (!canvasRef.current) return { x: 0, y: 0 };
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = (screenX - rect.left - panOffset.x) / zoom;
+    const y = (screenY - rect.top - panOffset.y) / zoom;
+    return { x, y };
+  };
+
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!selectedTool || !canvasRef.current) return;
 
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = screenToCanvas(e.clientX, e.clientY);
 
     if (selectedTool === "container") {
       const newContainer = {
@@ -218,8 +233,10 @@ export default function Canvas() {
 
     const nodeElement = document.getElementById(selectedNode);
     if (nodeElement) {
-      nodeElement.style.left = `${x}px`;
-      nodeElement.style.top = `${y}px`;
+      // Use transform for smoother, hardware-accelerated movement
+      nodeElement.style.transform = `translate(${x}px, ${y}px)`;
+      nodeElement.style.left = '0';
+      nodeElement.style.top = '0';
     }
   };
 
@@ -227,8 +244,20 @@ export default function Canvas() {
     if (isDragging && selectedNode && canvasRef.current) {
       const nodeElement = document.getElementById(selectedNode);
       if (nodeElement) {
-        const x = parseInt(nodeElement.style.left);
-        const y = parseInt(nodeElement.style.top);
+        // Extract position from transform
+        const transform = nodeElement.style.transform;
+        const match = transform.match(/translate\((-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px\)/);
+
+        let x = 0, y = 0;
+        if (match) {
+          x = parseFloat(match[1]);
+          y = parseFloat(match[2]);
+        }
+
+        // Reset transform and set final position
+        nodeElement.style.transform = '';
+        nodeElement.style.left = `${x}px`;
+        nodeElement.style.top = `${y}px`;
 
         await updateNodePosition({
           roomId: "default",
@@ -271,6 +300,88 @@ export default function Canvas() {
     };
     return colors[priority as keyof typeof colors] || colors.medium;
   };
+
+  // Zoom with mouse wheel
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+
+    const delta = e.deltaY;
+    const zoomIntensity = 0.1;
+    const minZoom = 0.1;
+    const maxZoom = 3;
+
+    let newZoom = zoom;
+    if (delta < 0) {
+      // Zoom in
+      newZoom = Math.min(zoom * (1 + zoomIntensity), maxZoom);
+    } else {
+      // Zoom out
+      newZoom = Math.max(zoom * (1 - zoomIntensity), minZoom);
+    }
+
+    // Zoom towards cursor position
+    if (canvasRef.current) {
+      const rect = canvasRef.current.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const zoomRatio = newZoom / zoom;
+      const newPanX = mouseX - (mouseX - panOffset.x) * zoomRatio;
+      const newPanY = mouseY - (mouseY - panOffset.y) * zoomRatio;
+
+      setPanOffset({ x: newPanX, y: newPanY });
+    }
+
+    setZoom(newZoom);
+  };
+
+  // Pan canvas with middle mouse or space + drag
+  const handleCanvasMouseDown = (e: React.MouseEvent) => {
+    // Middle mouse button or space key + left mouse
+    if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
+      e.preventDefault();
+      setIsPanning(true);
+      setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+    }
+  };
+
+  const handleCanvasPan = (e: React.MouseEvent) => {
+    if (isPanning) {
+      setPanOffset({
+        x: e.clientX - panStart.x,
+        y: e.clientY - panStart.y,
+      });
+    }
+  };
+
+  const handleCanvasPanEnd = () => {
+    setIsPanning(false);
+  };
+
+  // Reset zoom and pan
+  const handleResetView = () => {
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
+
+  // Zoom controls
+  const handleZoomIn = () => {
+    setZoom(Math.min(zoom * 1.2, 3));
+  };
+
+  const handleZoomOut = () => {
+    setZoom(Math.max(zoom * 0.8, 0.1));
+  };
+
+  // Add event listeners for panning
+  useEffect(() => {
+    if (isPanning) {
+      document.addEventListener('mouseup', handleCanvasPanEnd);
+      return () => {
+        document.removeEventListener('mouseup', handleCanvasPanEnd);
+      };
+    }
+  }, [isPanning]);
 
   return (
     <div className={styles.canvasContainer}>
@@ -428,13 +539,41 @@ export default function Canvas() {
       {/* Canvas Area */}
       <div
         ref={canvasRef}
-        className={`${styles.canvas} ${selectedTool ? styles.addingMode : ""}`}
+        className={`${styles.canvas} ${selectedTool ? styles.addingMode : ""} ${isPanning ? styles.panning : ""}`}
         onClick={handleCanvasClick}
-        onMouseMove={handleMouseMove}
+        onMouseDown={handleCanvasMouseDown}
+        onMouseMove={(e) => {
+          handleMouseMove(e);
+          handleCanvasPan(e);
+        }}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
       >
-        <div className={styles.canvasGrid} />
+        {/* Zoom Controls */}
+        <div className={styles.zoomControls}>
+          <button className={styles.zoomButton} onClick={handleZoomIn} title="تكبير">
+            +
+          </button>
+          <div className={styles.zoomLevel}>{Math.round(zoom * 100)}%</div>
+          <button className={styles.zoomButton} onClick={handleZoomOut} title="تصغير">
+            −
+          </button>
+          <button className={styles.zoomButton} onClick={handleResetView} title="إعادة تعيين">
+            ⟲
+          </button>
+        </div>
+
+        {/* Canvas Content (transformed for zoom/pan) */}
+        <div
+          ref={canvasContentRef}
+          className={styles.canvasContent}
+          style={{
+            transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
+            transformOrigin: '0 0',
+          }}
+        >
+          <div className={styles.canvasGrid} />
 
         {/* Connection Lines */}
         <svg className={styles.connectionsSvg}>
@@ -473,7 +612,7 @@ export default function Canvas() {
             <motion.div
               key={node.id}
               id={node.id}
-              className={`${styles.node} ${selectedNode === node.id ? styles.selected : ""} ${connectingFrom === node.id ? styles.connecting : ""}`}
+              className={`${styles.node} ${selectedNode === node.id ? styles.selected : ""} ${connectingFrom === node.id ? styles.connecting : ""} ${isDragging && selectedNode === node.id ? styles.dragging : ""}`}
               style={{
                 left: node.position.x,
                 top: node.position.y,
@@ -624,35 +763,38 @@ export default function Canvas() {
           ))}
         </AnimatePresence>
 
-        {/* Empty State */}
-        {nodes.length === 0 && (
-          <div className={styles.emptyState}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2>لوحة العمل</h2>
-              <p>ابدأ التخطيط باختيار عنصر من الشريط الجانبي</p>
+          {/* Empty State */}
+          {nodes.length === 0 && (
+            <div className={styles.emptyState}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <h2>لوحة العمل</h2>
+                <p>ابدأ التخطيط باختيار عنصر من الشريط الجانبي</p>
 
-              <div className={styles.emptyGrid}>
-                <div className={styles.emptyCard}>
-                  <span className={styles.emptyNumber}>01</span>
-                  <span>اختر نوع العنصر</span>
+                <div className={styles.emptyGrid}>
+                  <div className={styles.emptyCard}>
+                    <span className={styles.emptyNumber}>01</span>
+                    <span>اختر نوع العنصر</span>
+                  </div>
+                  <div className={styles.emptyCard}>
+                    <span className={styles.emptyNumber}>02</span>
+                    <span>انقر على اللوحة</span>
+                  </div>
+                  <div className={styles.emptyCard}>
+                    <span className={styles.emptyNumber}>03</span>
+                    <span>عدل واربط العناصر</span>
+                  </div>
                 </div>
-                <div className={styles.emptyCard}>
-                  <span className={styles.emptyNumber}>02</span>
-                  <span>انقر على اللوحة</span>
-                </div>
-                <div className={styles.emptyCard}>
-                  <span className={styles.emptyNumber}>03</span>
-                  <span>عدل واربط العناصر</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
+              </motion.div>
+            </div>
+          )}
+        </div>
+        {/* End of Canvas Content */}
       </div>
+      {/* End of Canvas */}
     </div>
   );
 }
