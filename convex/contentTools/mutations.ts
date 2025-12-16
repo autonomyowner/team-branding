@@ -1,8 +1,8 @@
-import { mutation } from "../_generated/server";
+import { mutation, internalMutation } from "../_generated/server";
 import { v } from "convex/values";
 
 // Helper: Create generation record
-export const createGeneration = mutation({
+export const createGeneration = internalMutation({
   args: {
     userPrompt: v.string(),
     type: v.union(v.literal("image"), v.literal("video")),
@@ -21,7 +21,7 @@ export const createGeneration = mutation({
 });
 
 // Helper: Update generation record
-export const updateGeneration = mutation({
+export const updateGeneration = internalMutation({
   args: {
     generationId: v.id("contentGenerations"),
     enhancedPrompt: v.optional(v.string()),
