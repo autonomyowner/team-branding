@@ -168,7 +168,7 @@ Output ONLY the complete HTML code, starting with <!DOCTYPE html> and ending wit
           "X-Title": "P1 Content Tools",
         },
         body: JSON.stringify({
-          model: "anthropic/claude-3.5-sonnet-20241022",
+          model: "anthropic/claude-3-5-sonnet-20241022",
           messages: [
             { role: "user", content: htmlPrompt }
           ],
@@ -285,7 +285,7 @@ Output ONLY the complete HTML code, starting with <!DOCTYPE html> and ending wit
           "X-Title": "P1 Content Tools",
         },
         body: JSON.stringify({
-          model: "anthropic/claude-3.5-sonnet-20241022",
+          model: "anthropic/claude-3-5-sonnet-20241022",
           messages: [
             { role: "user", content: htmlPrompt }
           ],
