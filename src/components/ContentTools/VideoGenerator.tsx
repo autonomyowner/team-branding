@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useAuth } from "@/context/AuthContext";
 import PromptInput from "./PromptInput";
@@ -16,7 +16,7 @@ export default function VideoGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
 
-  const enhancePromptMutation = useMutation(api.contentTools.mutations.enhancePrompt);
+  const enhancePromptAction = useAction(api.contentTools.actions.enhancePrompt);
 
   const handleGenerate = async () => {
     if (!userPrompt.trim()) return;
@@ -28,7 +28,7 @@ export default function VideoGenerator() {
     try {
       // Step 1: Enhance prompt with Haiku
       setIsEnhancing(true);
-      const { enhancedPrompt: enhanced } = await enhancePromptMutation({
+      const { enhancedPrompt: enhanced } = await enhancePromptAction({
         userPrompt,
         type: "video",
         userId: user?.name || "guest",

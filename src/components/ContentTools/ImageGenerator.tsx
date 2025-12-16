@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useAuth } from "@/context/AuthContext";
 import PromptInput from "./PromptInput";
@@ -16,8 +16,8 @@ export default function ImageGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
 
-  const enhancePromptMutation = useMutation(api.contentTools.mutations.enhancePrompt);
-  const generateImageMutation = useMutation(api.contentTools.mutations.generateImage);
+  const enhancePromptAction = useAction(api.contentTools.actions.enhancePrompt);
+  const generateImageAction = useAction(api.contentTools.actions.generateImage);
 
   const handleGenerate = async () => {
     if (!userPrompt.trim()) return;
@@ -29,7 +29,7 @@ export default function ImageGenerator() {
     try {
       // Step 1: Enhance prompt with Haiku
       setIsEnhancing(true);
-      const { generationId, enhancedPrompt: enhanced } = await enhancePromptMutation({
+      const { generationId, enhancedPrompt: enhanced } = await enhancePromptAction({
         userPrompt,
         type: "image",
         userId: user?.name || "guest",
@@ -40,7 +40,7 @@ export default function ImageGenerator() {
 
       // Step 2: Generate image with enhanced prompt
       setIsGenerating(true);
-      const { imageUrl: url } = await generateImageMutation({
+      const { imageUrl: url } = await generateImageAction({
         generationId,
         enhancedPrompt: enhanced,
       });
