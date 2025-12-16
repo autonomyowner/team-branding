@@ -28,24 +28,40 @@ export default function ImageGenerator() {
 
     try {
       // Step 1: Enhance prompt with Haiku
+      console.log("Step 1: Starting prompt enhancement...");
       setIsEnhancing(true);
-      const { generationId, enhancedPrompt: enhanced } = await enhancePromptAction({
+
+      const enhanceResult = await enhancePromptAction({
         userPrompt,
         type: "image",
         userId: user?.name || "guest",
       });
 
-      setEnhancedPrompt(enhanced);
+      console.log("Step 1 completed:", enhanceResult);
+
+      if (!enhanceResult || !enhanceResult.enhancedPrompt) {
+        throw new Error("Failed to enhance prompt: No enhanced prompt returned");
+      }
+
+      setEnhancedPrompt(enhanceResult.enhancedPrompt);
       setIsEnhancing(false);
 
       // Step 2: Generate HTML visual content
+      console.log("Step 2: Starting HTML generation...");
       setIsGenerating(true);
-      const { htmlContent: html } = await generateImageAction({
-        generationId,
-        enhancedPrompt: enhanced,
+
+      const generateResult = await generateImageAction({
+        generationId: enhanceResult.generationId,
+        enhancedPrompt: enhanceResult.enhancedPrompt,
       });
 
-      setHtmlContent(html);
+      console.log("Step 2 completed:", generateResult);
+
+      if (!generateResult || !generateResult.htmlContent) {
+        throw new Error("Failed to generate HTML: No content returned");
+      }
+
+      setHtmlContent(generateResult.htmlContent);
       setIsGenerating(false);
     } catch (err: any) {
       console.error("Generation failed:", err);
