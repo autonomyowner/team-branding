@@ -49,7 +49,13 @@ export default function ImageGenerator() {
       setIsGenerating(false);
     } catch (err: any) {
       console.error("Generation failed:", err);
-      setError(err.message || "فشل إنشاء الصورة. يرجى المحاولة مرة أخرى.");
+      console.error("Error details:", {
+        message: err.message,
+        stack: err.stack,
+        name: err.name,
+        data: err.data
+      });
+      setError(err.message || err.toString() || "فشل إنشاء الصورة. يرجى المحاولة مرة أخرى.");
       setIsEnhancing(false);
       setIsGenerating(false);
     }
