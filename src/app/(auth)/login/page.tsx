@@ -26,7 +26,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     email: "wahab@brandingteam.app",
     role: "Product Manager",
     roleAr: "مدير المنتج",
-    color: "#3b82f6",
+    color: "#ff4500",
     initials: "وه"
   },
   {
@@ -36,7 +36,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     email: "azeddine@brandingteam.app",
     role: "Tech",
     roleAr: "تقني",
-    color: "#10b981",
+    color: "#00b4d8",
     initials: "عز"
   },
   {
@@ -46,7 +46,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     email: "sohir@brandingteam.app",
     role: "Creative Lead",
     roleAr: "قائدة الإبداع",
-    color: "#ec4899",
+    color: "#f4a400",
     initials: "سه"
   },
   {
@@ -56,7 +56,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     email: "hythem@brandingteam.app",
     role: "Content Creator",
     roleAr: "صانع المحتوى",
-    color: "#f59e0b",
+    color: "#ff4500",
     initials: "هي"
   },
   {
@@ -66,7 +66,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     email: "meamar@brandingteam.app",
     role: "Sales & Branding",
     roleAr: "المبيعات والعلامة التجارية",
-    color: "#8b5cf6",
+    color: "#00b4d8",
     initials: "مع"
   },
 ];
@@ -79,7 +79,11 @@ export default function LoginPage() {
   const handleMemberSelect = async (member: TeamMember) => {
     setSelectedMember(member.id);
     await loginAsTeamMember(member);
-    router.push("/dashboard");
+
+    // Delay for animation
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 600);
   };
 
   const handleGuestAccess = () => {
@@ -89,26 +93,71 @@ export default function LoginPage() {
 
   return (
     <div className={styles.authPage}>
+      {/* Background Effects */}
       <div className={styles.authBackground}>
         <div className={styles.gridPattern} />
-        <div className={styles.glowOrb} />
+        <div className={styles.inkSplatter1} />
+        <div className={styles.inkSplatter2} />
+        <div className={styles.inkSplatter3} />
       </div>
+
+      {/* Large Editorial Number */}
+      <motion.div
+        className={styles.editorialNumber}
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 0.05, x: 0 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      >
+        05
+      </motion.div>
 
       <motion.div
         className={styles.authContainer}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
+        {/* Header */}
         <div className={styles.authHeader}>
-          <Link href="/" className={styles.logo}>
-            <span className={styles.logoMark}>BT</span>
-            <span className={styles.logoText}>BRANDING TEAM</span>
-          </Link>
-          <h1>اختر عضو الفريق</h1>
-          <p>اختر اسمك للدخول إلى منصة الفريق</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Link href="/" className={styles.logo}>
+              <span className={styles.logoMark}>BT</span>
+              <span className={styles.logoText}>BRANDING TEAM</span>
+            </Link>
+          </motion.div>
+
+          <motion.h1
+            className={styles.mainTitle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            اختر عضو الفريق
+          </motion.h1>
+
+          <motion.p
+            className={styles.subtitle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            اختر اسمك للدخول إلى منصة الفريق
+          </motion.p>
+
+          {/* Accent Line */}
+          <motion.div
+            className={styles.accentBar}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          />
         </div>
 
+        {/* Team Member Grid */}
         <div className={styles.teamMemberGrid}>
           {TEAM_MEMBERS.map((member, index) => (
             <motion.button
@@ -117,40 +166,65 @@ export default function LoginPage() {
               className={`${styles.teamMemberCard} ${selectedMember === member.id ? styles.selected : ""}`}
               onClick={() => handleMemberSelect(member)}
               disabled={selectedMember !== null}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5 + index * 0.1,
+                ease: [0.16, 1, 0.3, 1]
+              }}
+              whileHover={{ scale: selectedMember === null ? 1.03 : 1, y: selectedMember === null ? -4 : 0 }}
+              whileTap={{ scale: 0.97 }}
             >
+              {/* Member Number */}
+              <div className={styles.memberNumber}>
+                {String(index + 1).padStart(2, '0')}
+              </div>
+
+              {/* Avatar */}
               <div
                 className={styles.memberAvatar}
-                style={{ backgroundColor: member.color }}
+                style={{
+                  backgroundColor: member.color,
+                  boxShadow: `0 8px 24px ${member.color}40`
+                }}
               >
-                {member.initials}
+                <span>{member.initials}</span>
               </div>
+
+              {/* Member Info */}
               <div className={styles.memberInfo}>
                 <h3 className={styles.memberName}>{member.nameAr}</h3>
                 <p className={styles.memberRole}>{member.roleAr}</p>
               </div>
+
+              {/* Selection Indicator */}
               {selectedMember === member.id && (
                 <motion.div
-                  className={styles.checkmark}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                >
-                  ✓
-                </motion.div>
+                  className={styles.selectionRing}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
               )}
             </motion.button>
           ))}
         </div>
 
-        <div className={styles.guestOption}>
+        {/* Guest Option */}
+        <motion.div
+          className={styles.guestOption}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1 }}
+        >
           <button onClick={handleGuestAccess} className={styles.guestButton}>
-            المتابعة كزائر
+            <span>المتابعة كزائر</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </button>
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );

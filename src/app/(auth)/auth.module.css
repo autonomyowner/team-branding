@@ -1,6 +1,5 @@
 /* ==========================================
-   AUTH PAGES - Refined & Elegant
-   Premium Glass Morphism Design
+   AUTH PAGES - Editorial Style
    ========================================== */
 
 .authPage {
@@ -8,18 +7,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-10) var(--space-6);
   position: relative;
   overflow: hidden;
+  padding: var(--space-8);
+  direction: rtl;
 }
 
-/* ==========================================
-   BACKGROUND EFFECTS
-   ========================================== */
+/* Background */
 .authBackground {
   position: fixed;
   inset: 0;
-  background: var(--bg-void);
   z-index: 0;
 }
 
@@ -27,578 +24,402 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 64px 64px;
-  opacity: 1;
-  mask-image: radial-gradient(ellipse 100% 80% at 50% 20%, black, transparent);
-  -webkit-mask-image: radial-gradient(ellipse 100% 80% at 50% 20%, black, transparent);
+    linear-gradient(rgba(254, 253, 245, 0.03) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(254, 253, 245, 0.03) 2px, transparent 2px);
+  background-size: 80px 80px;
+  opacity: 0.4;
 }
 
-.glowOrb {
+/* Ink Splatter Effects */
+.inkSplatter1,
+.inkSplatter2,
+.inkSplatter3 {
   position: absolute;
-  top: 15%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 800px;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  opacity: 0.1;
+}
+
+.inkSplatter1 {
+  width: 500px;
   height: 500px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(20, 184, 166, 0.15) 0%,
-    rgba(20, 184, 166, 0.05) 40%,
-    transparent 70%
-  );
-  pointer-events: none;
-  filter: blur(40px);
+  background: radial-gradient(circle, var(--vermillion) 0%, transparent 70%);
+  top: -10%;
+  right: -10%;
+  animation: float 8s ease-in-out infinite;
 }
 
-/* ==========================================
-   AUTH CONTAINER - Glass Card
-   ========================================== */
-.authContainer {
-  width: 100%;
-  max-width: 440px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-12);
-  position: relative;
+.inkSplatter2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--cyan) 0%, transparent 70%);
+  bottom: -5%;
+  left: 10%;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+.inkSplatter3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--mustard) 0%, transparent 70%);
+  top: 40%;
+  left: -5%;
+  animation: float 12s ease-in-out infinite;
+}
+
+/* Editorial Number Background */
+.editorialNumber {
+  position: fixed;
+  top: 50%;
+  left: -5%;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: 30rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-primary);
   z-index: 1;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-    0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
-/* Top accent line */
-.authContainer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  border-radius: var(--radius-full);
-}
-
-/* Subtle inner glow */
-.authContainer::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0) 50%
-  );
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask-composite: xor;
+  user-select: none;
   pointer-events: none;
 }
 
-/* ==========================================
-   HEADER
-   ========================================== */
+/* Container */
+.authContainer {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Header */
 .authHeader {
   text-align: center;
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-12);
 }
 
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   text-decoration: none;
   margin-bottom: var(--space-8);
+  transition: transform var(--duration-normal) var(--ease-expo);
+}
+
+.logo:hover {
+  transform: scale(1.05);
 }
 
 .logoMark {
-  width: 44px;
-  height: 44px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
-  color: var(--bg-void);
+  background: linear-gradient(135deg, var(--vermillion), var(--cyan));
+  color: var(--cream);
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: var(--text-3xl);
   font-weight: 700;
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+}
+
+.logoMark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2));
 }
 
 .logoText {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--text-2xl);
+  letter-spacing: 0.1em;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  text-transform: uppercase;
 }
 
-.authHeader h1 {
-  font-family: var(--font-display);
-  font-size: 1.75rem;
-  font-weight: 700;
+.mainTitle {
+  font-family: var(--font-arabic);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.1;
   color: var(--text-primary);
-  margin-bottom: var(--space-2);
-  letter-spacing: -0.02em;
+  margin: var(--space-6) 0;
+  text-transform: none;
+  position: relative;
+  display: inline-block;
 }
 
-.authHeader p {
+.subtitle {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-8);
+  font-weight: 400;
+}
+
+/* Accent Bar */
+.accentBar {
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--vermillion), var(--cyan), var(--mustard));
+  margin: var(--space-6) auto 0;
+  transform-origin: center;
+}
+
+/* Team Member Grid */
+.teamMemberGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-10);
+}
+
+/* Team Member Card */
+.teamMemberCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-expo);
+  text-align: right;
+  overflow: hidden;
+}
+
+.teamMemberCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg, var(--vermillion), var(--cyan));
+  opacity: 0.05;
+  transition: width var(--duration-normal) var(--ease-expo);
+}
+
+.teamMemberCard:hover::before {
+  width: 100%;
+}
+
+.teamMemberCard:hover {
+  border-color: var(--border-highlight);
+  box-shadow: var(--shadow-lg);
+}
+
+.teamMemberCard:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.teamMemberCard.selected {
+  border-color: var(--vermillion);
+  background: var(--bg-elevated);
+  box-shadow: 0 0 0 4px var(--accent-subtle), var(--shadow-xl);
+}
+
+/* Member Number */
+.memberNumber {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+/* Member Avatar */
+.memberAvatar {
+  flex-shrink: 0;
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-arabic);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--cream);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-normal) var(--ease-expo);
+}
+
+.teamMemberCard:hover .memberAvatar {
+  transform: rotate(-5deg) scale(1.1);
+}
+
+.memberAvatar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.memberAvatar span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Member Info */
+.memberInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.memberName {
+  font-family: var(--font-arabic);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+  text-transform: none;
+}
+
+.memberRole {
+  font-family: var(--font-arabic);
   font-size: var(--text-sm);
   color: var(--text-secondary);
   margin: 0;
-}
-
-/* ==========================================
-   FORM STYLES
-   ========================================== */
-.authForm {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.formGroup label {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.labelRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.forgotLink {
-  font-size: var(--text-xs);
   font-weight: 500;
-  color: var(--accent);
-  text-decoration: none;
-  text-transform: none;
-  letter-spacing: 0;
-  transition: color var(--duration-fast) ease;
 }
 
-.forgotLink:hover {
-  color: var(--accent-light);
+/* Selection Ring */
+.selectionRing {
+  position: absolute;
+  inset: -4px;
+  border: 3px solid var(--vermillion);
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
-.formGroup input {
-  width: 100%;
-  padding: var(--space-4) var(--space-4);
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  transition: all var(--duration-fast) ease;
-}
-
-.formGroup input::placeholder {
-  color: var(--text-muted);
-}
-
-.formGroup input:hover {
-  border-color: var(--border-highlight);
-}
-
-.formGroup input:focus {
-  outline: none;
-  border-color: var(--accent);
-  background: rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 0 3px var(--accent-subtle);
-}
-
-.formGroup input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Form Row - Side by Side */
-.formRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-}
-
-@media (max-width: 480px) {
-  .formRow {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ==========================================
-   ERROR MESSAGE
-   ========================================== */
-.errorMessage {
-  background: var(--error-subtle);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: var(--radius-md);
-  color: #fca5a5;
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-sm);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-/* ==========================================
-   SUBMIT BUTTON
-   ========================================== */
-.submitButton {
-  width: 100%;
-  padding: var(--space-4) var(--space-6);
-  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
-  color: var(--bg-void);
-  border: none;
-  border-radius: var(--radius-md);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--duration-normal) var(--ease-out-expo);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: 52px;
-  margin-top: var(--space-2);
-  box-shadow: 0 4px 16px rgba(20, 184, 166, 0.25);
-}
-
-.submitButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.35);
-}
-
-.submitButton:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.submitButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Spinner */
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid transparent;
-  border-top-color: var(--bg-void);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-/* ==========================================
-   DIVIDER
-   ========================================== */
-.authDivider {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  margin: var(--space-8) 0;
-}
-
-.authDivider::before,
-.authDivider::after {
+.selectionRing::before {
   content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.authDivider span {
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-/* ==========================================
-   SOCIAL BUTTONS
-   ========================================== */
-.socialButtons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-}
-
-.socialButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background: var(--vermillion);
+  border-radius: 0 var(--radius-lg) 0 var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-family: var(--font-body);
+}
+
+.selectionRing::after {
+  content: '✓';
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  color: var(--cream);
   font-size: var(--text-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--duration-fast) ease;
+  font-weight: 700;
 }
 
-.socialButton:hover {
-  background: rgba(0, 0, 0, 0.3);
-  border-color: var(--border-highlight);
-  color: var(--text-primary);
-}
-
-.socialButton svg {
-  flex-shrink: 0;
-}
-
-/* ==========================================
-   GUEST OPTION
-   ========================================== */
+/* Guest Option */
 .guestOption {
-  margin-top: var(--space-6);
   text-align: center;
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--border);
 }
 
 .guestButton {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: var(--space-3) var(--space-8);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-8);
   background: transparent;
-  border: 1px dashed var(--border);
+  border: 2px solid var(--border-highlight);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  text-decoration: none;
+  font-family: var(--font-arabic);
+  font-size: var(--text-base);
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--duration-fast) ease;
+  transition: all var(--duration-normal) var(--ease-expo);
 }
 
 .guestButton:hover {
-  border-color: var(--accent);
-  border-style: solid;
-  color: var(--accent);
-  background: var(--accent-subtle);
-}
-
-/* ==========================================
-   FOOTER
-   ========================================== */
-.authFooter {
-  text-align: center;
-  margin-top: var(--space-6);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-}
-
-.authFooter a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 600;
-  transition: color var(--duration-fast) ease;
-}
-
-.authFooter a:hover {
-  color: var(--accent-light);
-}
-
-/* ==========================================
-   PASSWORD STRENGTH
-   ========================================== */
-.passwordStrength {
-  display: flex;
-  gap: 4px;
-  margin-top: var(--space-2);
-}
-
-.strengthBar {
-  flex: 1;
-  height: 3px;
-  background: var(--border);
-  border-radius: var(--radius-full);
-  transition: background var(--duration-fast) ease;
-}
-
-.strengthBar.weak {
-  background: var(--error);
-}
-
-.strengthBar.medium {
-  background: var(--warning);
-}
-
-.strengthBar.strong {
-  background: var(--success);
-}
-
-.strengthText {
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  margin-top: var(--space-1);
-}
-
-/* ==========================================
-   CHECKBOX
-   ========================================== */
-.checkbox {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  cursor: pointer;
-}
-
-.checkbox input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--accent);
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.checkbox span {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.checkbox a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color var(--duration-fast) ease;
-}
-
-.checkbox a:hover {
-  color: var(--accent-light);
-}
-
-/* ==========================================
-   TEAM MEMBER SELECTION
-   ========================================== */
-.teamMemberGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-}
-
-.teamMemberCard {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4);
-  background: var(--glass-bg-light);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: right;
-}
-
-.teamMemberCard:hover:not(:disabled) {
-  background: var(--glass-bg-lighter);
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.3);
-}
-
-.teamMemberCard:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.teamMemberCard.selected {
-  background: var(--glass-bg-lighter);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.2);
-}
-
-.memberAvatar {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: white;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.memberInfo {
-  flex: 1;
-  text-align: right;
-}
-
-.memberName {
-  font-size: 1.125rem;
-  font-weight: 600;
+  background: var(--bg-hover);
+  border-color: var(--text-primary);
   color: var(--text-primary);
-  margin: 0 0 var(--space-1) 0;
+  transform: translateY(-2px);
 }
 
-.memberRole {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin: 0;
+.guestButton svg {
+  transition: transform var(--duration-normal) ease;
 }
 
-.checkmark {
-  width: 24px;
-  height: 24px;
-  border-radius: var(--radius-full);
-  background: var(--accent);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  flex-shrink: 0;
+.guestButton:hover svg {
+  transform: translateX(-4px);
 }
 
-/* ==========================================
-   RESPONSIVE
-   ========================================== */
-@media (max-width: 480px) {
-  .authContainer {
-    padding: var(--space-8) var(--space-6);
-    border-radius: var(--radius-lg);
+/* Responsive */
+@media (max-width: 768px) {
+  .authPage {
+    padding: var(--space-4);
   }
 
-  .authHeader h1 {
-    font-size: 1.5rem;
+  .editorialNumber {
+    font-size: 15rem;
+    left: -20%;
   }
 
-  .socialButtons {
+  .teamMemberGrid {
     grid-template-columns: 1fr;
+    gap: var(--space-4);
   }
 
-  .logo {
-    margin-bottom: var(--space-6);
+  .mainTitle {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .logoMark {
+    width: 50px;
+    height: 50px;
+    font-size: var(--text-2xl);
+  }
+
+  .logoText {
+    font-size: var(--text-lg);
+  }
+
+  .memberAvatar {
+    width: 60px;
+    height: 60px;
+    font-size: var(--text-xl);
+  }
+
+  .teamMemberCard {
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(20px, -20px) rotate(2deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(-2deg);
   }
 }
