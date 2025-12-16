@@ -1,6 +1,6 @@
 import { action } from "../_generated/server";
 import { v } from "convex/values";
-import { internal } from "../_generated/api";
+import type { Id } from "../_generated/dataModel";
 
 // Step 1: Enhance prompt using Haiku via OpenRouter
 export const enhancePrompt = action({
@@ -9,7 +9,8 @@ export const enhancePrompt = action({
     type: v.union(v.literal("image"), v.literal("video")),
     userId: v.optional(v.string()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ generationId: Id<"contentGenerations">; enhancedPrompt: string }> => {
+    const { internal } = await import("../_generated/api");
     const { userPrompt, type, userId } = args;
 
     // Create generation record via internal mutation
@@ -121,7 +122,8 @@ export const generateImage = action({
     generationId: v.id("contentGenerations"),
     enhancedPrompt: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ imageUrl: string }> => {
+    const { internal } = await import("../_generated/api");
     const { generationId, enhancedPrompt } = args;
 
     try {
