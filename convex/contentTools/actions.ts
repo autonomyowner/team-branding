@@ -137,24 +137,25 @@ export const generateImage = action({
 
     try {
       // Check if API key is configured
-      if (!process.env.OPENROUTER_API_KEY) {
-        throw new Error("OPENROUTER_API_KEY environment variable is not set");
+      if (!process.env.OPENAI_API_KEY) {
+        throw new Error("OPENAI_API_KEY environment variable is not set");
       }
 
-      // Use OpenRouter's image generation endpoint (DALL-E 3)
-      const response = await fetch("https://openrouter.ai/api/v1/images/generations", {
+      // Use OpenAI's API directly for image generation (DALL-E 3)
+      // Note: OpenRouter doesn't support image generation, only text models
+      console.log("Calling OpenAI DALL-E 3 API...");
+      const response = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://p1-workspace.app",
-          "X-Title": "P1 Content Tools",
         },
         body: JSON.stringify({
-          model: "openai/dall-e-3",
+          model: "dall-e-3",
           prompt: enhancedPrompt,
           n: 1,
           size: "1024x1024",
+          quality: "standard",
         }),
       });
 
