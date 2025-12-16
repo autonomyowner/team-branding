@@ -16,8 +16,8 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body>
-        <div className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-4 text-center shadow-md">
-          <p className="text-lg font-semibold">
+        <div className="w-full bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 text-white py-4 px-4 flex items-center justify-center shadow-lg">
+          <p className="text-xl font-bold tracking-wide">
             بسم الله توكلت على الله ولا حول وَلا قوة إلا بِاللهِ
           </p>
         </div>
