@@ -11,6 +11,7 @@
 import type * as auth_users from "../auth/users.js";
 import type * as canvas_mutations from "../canvas/mutations.js";
 import type * as canvas_queries from "../canvas/queries.js";
+import type * as contentTools_mutations from "../contentTools/mutations.js";
 import type * as http from "../http.js";
 import type * as projects_mutations from "../projects/mutations.js";
 import type * as projects_queries from "../projects/queries.js";
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   "auth/users": typeof auth_users;
   "canvas/mutations": typeof canvas_mutations;
   "canvas/queries": typeof canvas_queries;
+  "contentTools/mutations": typeof contentTools_mutations;
   http: typeof http;
   "projects/mutations": typeof projects_mutations;
   "projects/queries": typeof projects_queries;
