@@ -162,3 +162,129 @@ export const updatePhaseStatus = mutation({
     return workflowId;
   },
 });
+
+export const addTask = mutation({
+  args: {
+    workflowId: v.id("teamWorkflowPhases"),
+    phaseId: v.string(),
+    task: v.object({
+      text: v.string(),
+      textAr: v.string(),
+      owner: v.string(),
+    }),
+    editedBy: v.optional(v.string()),
+  },
+  handler: async (ctx, { workflowId, phaseId, task, editedBy }) => {
+    const workflow = await ctx.db.get(workflowId);
+    if (!workflow) {
+      throw new Error("Workflow not found");
+    }
+
+    const taskId = `t${Date.now()}`;
+    const newTask = {
+      id: taskId,
+      text: task.text,
+      textAr: task.textAr,
+      owner: task.owner,
+      completed: false,
+    };
+
+    const updatedPhases = workflow.phases.map((phase) => {
+      if (phase.id === phaseId) {
+        return {
+          ...phase,
+          tasks: [...phase.tasks, newTask],
+        };
+      }
+      return phase;
+    });
+
+    await ctx.db.patch(workflowId, {
+      phases: updatedPhases,
+      lastEditedBy: editedBy,
+      version: workflow.version + 1,
+    });
+
+    return taskId;
+  },
+});
+
+export const updateTask = mutation({
+  args: {
+    workflowId: v.id("teamWorkflowPhases"),
+    phaseId: v.string(),
+    taskId: v.string(),
+    updates: v.object({
+      text: v.optional(v.string()),
+      textAr: v.optional(v.string()),
+      owner: v.optional(v.string()),
+    }),
+    editedBy: v.optional(v.string()),
+  },
+  handler: async (ctx, { workflowId, phaseId, taskId, updates, editedBy }) => {
+    const workflow = await ctx.db.get(workflowId);
+    if (!workflow) {
+      throw new Error("Workflow not found");
+    }
+
+    const updatedPhases = workflow.phases.map((phase) => {
+      if (phase.id === phaseId) {
+        return {
+          ...phase,
+          tasks: phase.tasks.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  ...(updates.text !== undefined && { text: updates.text }),
+                  ...(updates.textAr !== undefined && { textAr: updates.textAr }),
+                  ...(updates.owner !== undefined && { owner: updates.owner }),
+                }
+              : task
+          ),
+        };
+      }
+      return phase;
+    });
+
+    await ctx.db.patch(workflowId, {
+      phases: updatedPhases,
+      lastEditedBy: editedBy,
+      version: workflow.version + 1,
+    });
+
+    return workflowId;
+  },
+});
+
+export const deleteTask = mutation({
+  args: {
+    workflowId: v.id("teamWorkflowPhases"),
+    phaseId: v.string(),
+    taskId: v.string(),
+    editedBy: v.optional(v.string()),
+  },
+  handler: async (ctx, { workflowId, phaseId, taskId, editedBy }) => {
+    const workflow = await ctx.db.get(workflowId);
+    if (!workflow) {
+      throw new Error("Workflow not found");
+    }
+
+    const updatedPhases = workflow.phases.map((phase) => {
+      if (phase.id === phaseId) {
+        return {
+          ...phase,
+          tasks: phase.tasks.filter((task) => task.id !== taskId),
+        };
+      }
+      return phase;
+    });
+
+    await ctx.db.patch(workflowId, {
+      phases: updatedPhases,
+      lastEditedBy: editedBy,
+      version: workflow.version + 1,
+    });
+
+    return workflowId;
+  },
+});

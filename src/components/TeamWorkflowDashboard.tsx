@@ -146,6 +146,11 @@ export default function TeamWorkflowDashboard() {
   const { user } = useAuth();
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "team" | "schedule">("overview");
+  const [addingTaskToPhase, setAddingTaskToPhase] = useState<string | null>(null);
+  const [newTaskText, setNewTaskText] = useState("");
+  const [newTaskOwner, setNewTaskOwner] = useState("الكل");
+  const [editingTask, setEditingTask] = useState<{ phaseId: string; taskId: string } | null>(null);
+  const [editTaskText, setEditTaskText] = useState("");
 
   // Convex real-time query - auto-updates when data changes
   const workflowData = useQuery(api.teamWorkflow.queries.get, { workspaceId: undefined });
@@ -154,6 +159,9 @@ export default function TeamWorkflowDashboard() {
   const initializeWorkflow = useMutation(api.teamWorkflow.mutations.initialize);
   const updatePhasesMutation = useMutation(api.teamWorkflow.mutations.updatePhases);
   const updateTaskStatusMutation = useMutation(api.teamWorkflow.mutations.updateTaskStatus);
+  const addTaskMutation = useMutation(api.teamWorkflow.mutations.addTask);
+  const updateTaskMutation = useMutation(api.teamWorkflow.mutations.updateTask);
+  const deleteTaskMutation = useMutation(api.teamWorkflow.mutations.deleteTask);
 
   // Initialize workflow if it doesn't exist
   useEffect(() => {
@@ -187,6 +195,60 @@ export default function TeamWorkflowDashboard() {
     });
 
     // Data will auto-update via Convex real-time query
+  };
+
+  const handleAddTask = async (phaseId: string) => {
+    if (!workflowData || !newTaskText.trim()) return;
+
+    await addTaskMutation({
+      workflowId: workflowData._id,
+      phaseId,
+      task: {
+        text: newTaskText.trim(),
+        textAr: newTaskText.trim(),
+        owner: newTaskOwner,
+      },
+      editedBy: user?.name || "Anonymous",
+    });
+
+    // Reset form
+    setNewTaskText("");
+    setNewTaskOwner("الكل");
+    setAddingTaskToPhase(null);
+  };
+
+  const handleEditTask = async (phaseId: string, taskId: string) => {
+    if (!workflowData || !editTaskText.trim()) return;
+
+    await updateTaskMutation({
+      workflowId: workflowData._id,
+      phaseId,
+      taskId,
+      updates: {
+        text: editTaskText.trim(),
+        textAr: editTaskText.trim(),
+      },
+      editedBy: user?.name || "Anonymous",
+    });
+
+    setEditingTask(null);
+    setEditTaskText("");
+  };
+
+  const handleDeleteTask = async (phaseId: string, taskId: string) => {
+    if (!workflowData) return;
+
+    await deleteTaskMutation({
+      workflowId: workflowData._id,
+      phaseId,
+      taskId,
+      editedBy: user?.name || "Anonymous",
+    });
+  };
+
+  const startEditing = (phaseId: string, task: Task) => {
+    setEditingTask({ phaseId, taskId: task.id });
+    setEditTaskText(task.textAr);
   };
 
   const getPhaseProgress = (phase: Phase) => {
@@ -342,24 +404,148 @@ export default function TeamWorkflowDashboard() {
                             <div
                               key={task.id}
                               className={`${styles.taskItem} ${task.completed ? styles.completed : ""}`}
-                              onClick={() => toggleTask(phase.id, task.id)}
                             >
-                              <div className={`${styles.checkbox} ${task.completed ? styles.checked : ""}`}>
+                              <div
+                                className={`${styles.checkbox} ${task.completed ? styles.checked : ""}`}
+                                onClick={() => toggleTask(phase.id, task.id)}
+                              >
                                 {task.completed && (
                                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                                     <polyline points="20 6 9 17 4 12" />
                                   </svg>
                                 )}
                               </div>
-                              <span className={styles.taskText}>{task.textAr}</span>
-                              <span
-                                className={styles.taskOwner}
-                                style={{ backgroundColor: `${getMemberColor(task.owner)}20`, color: getMemberColor(task.owner) }}
-                              >
-                                {task.owner}
-                              </span>
+                              {editingTask?.phaseId === phase.id && editingTask?.taskId === task.id ? (
+                                <>
+                                  <input
+                                    type="text"
+                                    value={editTaskText}
+                                    onChange={(e) => setEditTaskText(e.target.value)}
+                                    className={styles.editTaskInput}
+                                    autoFocus
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        handleEditTask(phase.id, task.id);
+                                      } else if (e.key === "Escape") {
+                                        setEditingTask(null);
+                                        setEditTaskText("");
+                                      }
+                                    }}
+                                  />
+                                  <button
+                                    className={styles.addTaskBtn}
+                                    onClick={() => handleEditTask(phase.id, task.id)}
+                                  >
+                                    حفظ
+                                  </button>
+                                  <button
+                                    className={styles.cancelBtn}
+                                    onClick={() => {
+                                      setEditingTask(null);
+                                      setEditTaskText("");
+                                    }}
+                                  >
+                                    إلغاء
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <span className={styles.taskText}>{task.textAr}</span>
+                                  <span
+                                    className={styles.taskOwner}
+                                    style={{ backgroundColor: `${getMemberColor(task.owner)}20`, color: getMemberColor(task.owner) }}
+                                  >
+                                    {task.owner}
+                                  </span>
+                                  <div className={styles.taskActions}>
+                                    <button
+                                      className={styles.taskActionBtn}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        startEditing(phase.id, task);
+                                      }}
+                                      title="تعديل"
+                                    >
+                                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      className={`${styles.taskActionBtn} ${styles.deleteBtn}`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteTask(phase.id, task.id);
+                                      }}
+                                      title="حذف"
+                                    >
+                                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                                        <polyline points="3 6 5 6 21 6" />
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           ))}
+
+                        {/* Add Task Form */}
+                        {addingTaskToPhase === phase.id ? (
+                          <div className={styles.addTaskForm}>
+                            <input
+                              type="text"
+                              value={newTaskText}
+                              onChange={(e) => setNewTaskText(e.target.value)}
+                              placeholder="اكتب المهمة الجديدة..."
+                              className={styles.addTaskInput}
+                              autoFocus
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  handleAddTask(phase.id);
+                                } else if (e.key === "Escape") {
+                                  setAddingTaskToPhase(null);
+                                  setNewTaskText("");
+                                }
+                              }}
+                            />
+                            <select
+                              value={newTaskOwner}
+                              onChange={(e) => setNewTaskOwner(e.target.value)}
+                              className={styles.ownerSelect}
+                            >
+                              <option value="الكل">الكل</option>
+                              {TEAM_MEMBERS.map((member) => (
+                                <option key={member.id} value={member.initials}>
+                                  {member.nameAr}
+                                </option>
+                              ))}
+                            </select>
+                            <button
+                              className={styles.addTaskBtn}
+                              onClick={() => handleAddTask(phase.id)}
+                              disabled={!newTaskText.trim()}
+                            >
+                              إضافة
+                            </button>
+                            <button
+                              className={styles.cancelBtn}
+                              onClick={() => {
+                                setAddingTaskToPhase(null);
+                                setNewTaskText("");
+                              }}
+                            >
+                              إلغاء
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            className={styles.addTaskTrigger}
+                            onClick={() => setAddingTaskToPhase(phase.id)}
+                          >
+                            + إضافة مهمة جديدة
+                          </button>
+                        )}
                       </div>
 
                       <div className={styles.phaseProgress}>
