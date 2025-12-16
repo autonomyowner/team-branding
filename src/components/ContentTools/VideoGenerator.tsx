@@ -17,6 +17,7 @@ export default function VideoGenerator() {
   const [error, setError] = useState("");
 
   const enhancePromptAction = useAction(api.contentTools.actions.enhancePrompt);
+  const generateVideoAction = useAction(api.contentTools.actions.generateVideo);
 
   const handleGenerate = async () => {
     if (!userPrompt.trim()) return;
@@ -27,35 +28,49 @@ export default function VideoGenerator() {
 
     try {
       // Step 1: Enhance prompt with Haiku
+      console.log("Step 1: Starting prompt enhancement...");
       setIsEnhancing(true);
-      const { enhancedPrompt: enhanced } = await enhancePromptAction({
+
+      const enhanceResult = await enhancePromptAction({
         userPrompt,
         type: "video",
         userId: user?.name || "guest",
       });
 
-      setEnhancedPrompt(enhanced);
-      setIsEnhancing(false);
+      console.log("Step 1 completed:", enhanceResult);
 
-      // Step 2: Generate video HTML using the API route
-      setIsGenerating(true);
-      const response = await fetch("/api/generate-video", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: enhanced,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("فشل إنشاء الفيديو");
+      if (!enhanceResult || !enhanceResult.enhancedPrompt) {
+        throw new Error("Failed to enhance prompt: No enhanced prompt returned");
       }
 
-      const { html } = await response.json();
-      setHtmlContent(html);
+      setEnhancedPrompt(enhanceResult.enhancedPrompt);
+      setIsEnhancing(false);
+
+      // Step 2: Generate video HTML using Convex action
+      console.log("Step 2: Starting video HTML generation...");
+      setIsGenerating(true);
+
+      const generateResult = await generateVideoAction({
+        generationId: enhanceResult.generationId,
+        enhancedPrompt: enhanceResult.enhancedPrompt,
+      });
+
+      console.log("Step 2 completed:", generateResult);
+
+      if (!generateResult || !generateResult.htmlContent) {
+        throw new Error("Failed to generate video HTML: No content returned");
+      }
+
+      setHtmlContent(generateResult.htmlContent);
       setIsGenerating(false);
     } catch (err: any) {
       console.error("Generation failed:", err);
+      console.error("Error details:", {
+        message: err.message,
+        stack: err.stack,
+        name: err.name,
+        data: err.data
+      });
       setError(err.message || "فشل إنشاء الفيديو. يرجى المحاولة مرة أخرى.");
       setIsEnhancing(false);
       setIsGenerating(false);
@@ -137,20 +152,23 @@ export default function VideoGenerator() {
       {/* Result Display */}
       {htmlContent && !isGenerating && (
         <div className={styles.resultContainer}>
-          <div className={styles.videoPreviewInfo}>
-            <h3>الفيديو جاهز!</h3>
-            <p>يمكنك معاينة الفيديو أو تحميله لتسجيله</p>
+          <div className={styles.previewSection}>
+            <iframe
+              srcDoc={htmlContent}
+              className={styles.htmlPreview}
+              title="Generated Video Content"
+              sandbox="allow-scripts"
+            />
           </div>
-
           <div className={styles.actionButtons}>
-            <button onClick={handlePreview} className={styles.previewBtn}>
+            <button onClick={handlePreview} className={styles.actionBtn}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
               </svg>
-              معاينة
+              فتح في نافذة جديدة
             </button>
-
             <button onClick={handleDownload} className={styles.downloadBtn}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -160,16 +178,9 @@ export default function VideoGenerator() {
               تحميل HTML
             </button>
           </div>
-
-          <div className={styles.instructions}>
-            <h4>كيفية التسجيل:</h4>
-            <ol>
-              <li>افتح ملف HTML في متصفح</li>
-              <li>استخدم أداة تسجيل الشاشة (OBS، QuickTime، إلخ)</li>
-              <li>سجل الرسوم المتحركة</li>
-              <li>احفظ كفيديو MP4</li>
-            </ol>
-          </div>
+          <p className={styles.instructionText}>
+            نصيحة: افتح في نافذة جديدة، ثم استخدم أداة تسجيل الشاشة (OBS، QuickTime، إلخ) لتسجيل الفيديو كـ MP4
+          </p>
         </div>
       )}
     </div>
