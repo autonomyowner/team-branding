@@ -124,4 +124,33 @@ export default defineSchema({
     version: v.number(),
     lastEditedBy: v.optional(v.string()), // User name/email
   }).index("by_room", ["roomId"]),
+
+  // ============ TEAM WORKFLOW PHASES ============
+  teamWorkflowPhases: defineTable({
+    workspaceId: v.optional(v.id("workspaces")), // Optional: tie to workspace
+    phases: v.array(
+      v.object({
+        id: v.string(),
+        number: v.string(),
+        title: v.string(),
+        titleAr: v.string(),
+        status: v.union(
+          v.literal("pending"),
+          v.literal("in_progress"),
+          v.literal("complete")
+        ),
+        tasks: v.array(
+          v.object({
+            id: v.string(),
+            text: v.string(),
+            textAr: v.string(),
+            owner: v.string(),
+            completed: v.boolean(),
+          })
+        ),
+      })
+    ),
+    lastEditedBy: v.optional(v.string()),
+    version: v.number(),
+  }).index("by_workspace", ["workspaceId"]),
 });

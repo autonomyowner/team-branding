@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { useAuth } from "@/context/AuthContext";
 import styles from "./TeamWorkflowDashboard.module.css";
 
 interface TeamMember {
@@ -139,49 +142,50 @@ const INITIAL_PHASES: Phase[] = [
 const STORAGE_KEY = "team-workflow-state-ar";
 
 export default function TeamWorkflowDashboard() {
-  const [phases, setPhases] = useState<Phase[]>(INITIAL_PHASES);
+  const { user } = useAuth();
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "team" | "schedule">("overview");
 
-  // Load saved state from localStorage
+  // Convex real-time query - auto-updates when data changes
+  const workflowData = useQuery(api.teamWorkflow.queries.get, { workspaceId: undefined });
+
+  // Convex mutations
+  const initializeWorkflow = useMutation(api.teamWorkflow.mutations.initialize);
+  const updatePhasesMutation = useMutation(api.teamWorkflow.mutations.updatePhases);
+  const updateTaskStatusMutation = useMutation(api.teamWorkflow.mutations.updateTaskStatus);
+
+  // Initialize workflow if it doesn't exist
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setPhases(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load saved state");
-      }
+    if (workflowData === null) {
+      // No workflow exists yet, create initial one
+      void initializeWorkflow({
+        workspaceId: undefined,
+        phases: INITIAL_PHASES,
+      });
     }
-  }, []);
+  }, [workflowData, initializeWorkflow]);
 
-  // Save state to localStorage
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(phases));
-  }, [phases]);
+  // Use data from Convex or fallback to initial
+  const phases = workflowData?.phases || INITIAL_PHASES;
 
-  const toggleTask = (phaseId: string, taskId: string) => {
-    setPhases((prev) =>
-      prev.map((phase) => {
-        if (phase.id !== phaseId) return phase;
+  const toggleTask = async (phaseId: string, taskId: string) => {
+    if (!workflowData) return;
 
-        const updatedTasks = phase.tasks.map((task) =>
-          task.id === taskId ? { ...task, completed: !task.completed } : task
-        );
+    // Find current task status
+    const phase = phases.find((p) => p.id === phaseId);
+    const task = phase?.tasks.find((t) => t.id === taskId);
+    if (!task) return;
 
-        const completedCount = updatedTasks.filter((t) => t.completed).length;
-        const totalCount = updatedTasks.length;
-        let newStatus: Phase["status"] = "pending";
+    // Toggle task status in Convex
+    await updateTaskStatusMutation({
+      workflowId: workflowData._id,
+      phaseId,
+      taskId,
+      completed: !task.completed,
+      editedBy: user?.name || "Anonymous",
+    });
 
-        if (completedCount === totalCount) {
-          newStatus = "complete";
-        } else if (completedCount > 0) {
-          newStatus = "in_progress";
-        }
-
-        return { ...phase, tasks: updatedTasks, status: newStatus };
-      })
-    );
+    // Data will auto-update via Convex real-time query
   };
 
   const getPhaseProgress = (phase: Phase) => {

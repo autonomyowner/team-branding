@@ -8,7 +8,6 @@
  * @module
  */
 
-import type * as auth from "../auth.js";
 import type * as auth_users from "../auth/users.js";
 import type * as canvas_mutations from "../canvas/mutations.js";
 import type * as canvas_queries from "../canvas/queries.js";
@@ -16,6 +15,8 @@ import type * as http from "../http.js";
 import type * as projects_mutations from "../projects/mutations.js";
 import type * as projects_queries from "../projects/queries.js";
 import type * as sharedCanvas from "../sharedCanvas.js";
+import type * as teamWorkflow_mutations from "../teamWorkflow/mutations.js";
+import type * as teamWorkflow_queries from "../teamWorkflow/queries.js";
 import type * as workspaces_mutations from "../workspaces/mutations.js";
 import type * as workspaces_queries from "../workspaces/queries.js";
 
@@ -26,7 +27,6 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  auth: typeof auth;
   "auth/users": typeof auth_users;
   "canvas/mutations": typeof canvas_mutations;
   "canvas/queries": typeof canvas_queries;
@@ -34,6 +34,8 @@ declare const fullApi: ApiFromModules<{
   "projects/mutations": typeof projects_mutations;
   "projects/queries": typeof projects_queries;
   sharedCanvas: typeof sharedCanvas;
+  "teamWorkflow/mutations": typeof teamWorkflow_mutations;
+  "teamWorkflow/queries": typeof teamWorkflow_queries;
   "workspaces/mutations": typeof workspaces_mutations;
   "workspaces/queries": typeof workspaces_queries;
 }>;
