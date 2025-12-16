@@ -157,4 +157,28 @@ export default defineSchema({
     lastEditedBy: v.optional(v.string()),
     version: v.number(),
   }).index("by_workspace", ["workspaceId"]),
+
+  // ============ CONTENT GENERATION ============
+  contentGenerations: defineTable({
+    workspaceId: v.optional(v.id("workspaces")),
+    userId: v.optional(v.string()),
+    type: v.union(v.literal("image"), v.literal("video")),
+    userPrompt: v.string(),
+    enhancedPrompt: v.optional(v.string()),
+    model: v.optional(v.string()),
+    status: v.union(
+      v.literal("enhancing"),
+      v.literal("generating"),
+      v.literal("completed"),
+      v.literal("failed")
+    ),
+    resultUrl: v.optional(v.string()),
+    resultData: v.optional(v.string()),
+    error: v.optional(v.string()),
+    createdAt: v.number(),
+    completedAt: v.optional(v.number()),
+  })
+    .index("by_workspace", ["workspaceId"])
+    .index("by_user", ["userId"])
+    .index("by_status", ["status"]),
 });
