@@ -1,11 +1,12 @@
 import { query, mutation } from "../_generated/server";
 import { v } from "convex/values";
-import { auth } from "../auth";
 
 export const currentUser = query({
   args: {},
   handler: async (ctx) => {
-    return await auth.getUserId(ctx);
+    // Auth handled by localStorage on frontend for now
+    // Will be replaced with OAuth after configuration
+    return null;
   },
 });
 

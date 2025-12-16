@@ -1,8 +1,8 @@
 import { httpRouter } from "convex/server";
-import { auth } from "./auth";
 
 const http = httpRouter();
 
-auth.addHttpRoutes(http);
+// OAuth auth routes will be added after configuration
+// See OAUTH_SETUP_GUIDE.md for setup instructions
 
 export default http;
