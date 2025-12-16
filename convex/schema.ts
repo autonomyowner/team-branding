@@ -98,13 +98,17 @@ export default defineSchema({
         type: v.union(
           v.literal("task"),
           v.literal("note"),
-          v.literal("milestone")
+          v.literal("milestone"),
+          v.literal("decision"),
+          v.literal("blocker")
         ),
         position: v.object({ x: v.number(), y: v.number() }),
         size: v.object({ width: v.number(), height: v.number() }),
         content: v.string(),
         color: v.string(),
         assignee: v.optional(v.string()),
+        priority: v.optional(v.union(v.literal("high"), v.literal("medium"), v.literal("low"))),
+        connections: v.optional(v.array(v.string())),
       })
     ),
     containers: v.array(

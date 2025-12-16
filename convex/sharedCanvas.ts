@@ -7,12 +7,20 @@ const DEFAULT_ROOM = "team-canvas";
 
 const nodeValidator = v.object({
   id: v.string(),
-  type: v.union(v.literal("task"), v.literal("note"), v.literal("milestone")),
+  type: v.union(
+    v.literal("task"),
+    v.literal("note"),
+    v.literal("milestone"),
+    v.literal("decision"),
+    v.literal("blocker")
+  ),
   position: v.object({ x: v.number(), y: v.number() }),
   size: v.object({ width: v.number(), height: v.number() }),
   content: v.string(),
   color: v.string(),
   assignee: v.optional(v.string()),
+  priority: v.optional(v.union(v.literal("high"), v.literal("medium"), v.literal("low"))),
+  connections: v.optional(v.array(v.string())),
 });
 
 const containerValidator = v.object({
@@ -161,6 +169,8 @@ export const updateNode = mutation({
       content: v.optional(v.string()),
       color: v.optional(v.string()),
       assignee: v.optional(v.string()),
+      priority: v.optional(v.union(v.literal("high"), v.literal("medium"), v.literal("low"))),
+      connections: v.optional(v.array(v.string())),
     }),
     editedBy: v.optional(v.string()),
   },

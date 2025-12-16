@@ -7,12 +7,14 @@ import { useAuth } from "@/context/AuthContext";
 
 interface CanvasNode {
   id: string;
-  type: "task" | "note" | "milestone";
+  type: "task" | "note" | "milestone" | "decision" | "blocker";
   position: { x: number; y: number };
   size: { width: number; height: number };
   content: string;
   color: string;
   assignee?: string;
+  priority?: "high" | "medium" | "low";
+  connections?: string[];
 }
 
 interface CanvasContainer {
@@ -79,7 +81,7 @@ export function useCanvasData(roomId?: string) {
 
   const updateNode = useCallback(async (
     nodeId: string,
-    updates: Partial<Pick<CanvasNode, "position" | "size" | "content" | "color" | "assignee">>
+    updates: Partial<Pick<CanvasNode, "position" | "size" | "content" | "color" | "assignee" | "priority" | "connections">>
   ) => {
     // Optimistic update
     setLocalNodes(prev =>
