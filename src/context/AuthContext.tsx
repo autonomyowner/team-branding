@@ -21,6 +21,17 @@ export interface User {
   isGuest?: boolean;
 }
 
+interface TeamMemberData {
+  id: string;
+  name: string;
+  nameAr: string;
+  email: string;
+  role: string;
+  roleAr: string;
+  color: string;
+  initials: string;
+}
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -31,6 +42,7 @@ interface AuthContextType {
   logout: () => void;
   continueAsGuest: () => void;
   updateUser: (data: Partial<User>) => void;
+  loginAsTeamMember: (member: TeamMemberData) => void;
 }
 
 interface SignupData {
@@ -184,6 +196,22 @@ function useLocalStorageAuth() {
     }
   };
 
+  const loginAsTeamMember = (member: TeamMemberData) => {
+    const teamUser: User = {
+      id: member.id,
+      email: member.email,
+      name: member.name,
+      company: "BRANDING TEAM",
+      role: member.role,
+      avatar: member.color,
+      createdAt: new Date().toISOString(),
+      isGuest: false,
+    };
+
+    setUser(teamUser);
+    setCurrentUser(teamUser);
+  };
+
   return {
     user,
     isLoading,
@@ -194,6 +222,7 @@ function useLocalStorageAuth() {
     logout,
     continueAsGuest,
     updateUser,
+    loginAsTeamMember,
   };
 }
 
