@@ -11,7 +11,7 @@ export default function ImageGenerator() {
   const { user } = useAuth();
   const [userPrompt, setUserPrompt] = useState("");
   const [enhancedPrompt, setEnhancedPrompt] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [htmlContent, setHtmlContent] = useState("");
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
@@ -24,7 +24,7 @@ export default function ImageGenerator() {
 
     setError("");
     setEnhancedPrompt("");
-    setImageUrl("");
+    setHtmlContent("");
 
     try {
       // Step 1: Enhance prompt with Haiku
@@ -38,14 +38,14 @@ export default function ImageGenerator() {
       setEnhancedPrompt(enhanced);
       setIsEnhancing(false);
 
-      // Step 2: Generate image with enhanced prompt
+      // Step 2: Generate HTML visual content
       setIsGenerating(true);
-      const { imageUrl: url } = await generateImageAction({
+      const { htmlContent: html } = await generateImageAction({
         generationId,
         enhancedPrompt: enhanced,
       });
 
-      setImageUrl(url);
+      setHtmlContent(html);
       setIsGenerating(false);
     } catch (err: any) {
       console.error("Generation failed:", err);
@@ -55,30 +55,38 @@ export default function ImageGenerator() {
         name: err.name,
         data: err.data
       });
-      setError(err.message || err.toString() || "فشل إنشاء الصورة. يرجى المحاولة مرة أخرى.");
+      setError(err.message || err.toString() || "فشل إنشاء المحتوى. يرجى المحاولة مرة أخرى.");
       setIsEnhancing(false);
       setIsGenerating(false);
     }
   };
 
-  const handleDownload = async () => {
-    if (!imageUrl) return;
+  const handleDownload = () => {
+    if (!htmlContent) return;
 
     try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
+      const blob = new Blob([htmlContent], { type: "text/html" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `generated-image-${Date.now()}.png`;
+      link.download = `visual-content-${Date.now()}.html`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Download failed:", err);
-      setError("فشل تحميل الصورة. يرجى المحاولة مرة أخرى.");
+      setError("فشل تحميل الملف. يرجى المحاولة مرة أخرى.");
     }
+  };
+
+  const handleOpenInNewTab = () => {
+    if (!htmlContent) return;
+
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const url = window.URL.createObjectURL(blob);
+    window.open(url, "_blank");
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
   };
 
   return (
@@ -128,17 +136,37 @@ export default function ImageGenerator() {
       )}
 
       {/* Result Display */}
-      {imageUrl && !isGenerating && (
+      {htmlContent && !isGenerating && (
         <div className={styles.resultContainer}>
-          <img src={imageUrl} alt="Generated" className={styles.generatedImage} />
-          <button onClick={handleDownload} className={styles.downloadBtn}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            تحميل الصورة
-          </button>
+          <div className={styles.previewSection}>
+            <iframe
+              srcDoc={htmlContent}
+              className={styles.htmlPreview}
+              title="Generated Visual Content"
+              sandbox="allow-scripts"
+            />
+          </div>
+          <div className={styles.actionButtons}>
+            <button onClick={handleOpenInNewTab} className={styles.actionBtn}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              فتح في نافذة جديدة
+            </button>
+            <button onClick={handleDownload} className={styles.downloadBtn}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              تحميل HTML
+            </button>
+          </div>
+          <p className={styles.instructionText}>
+            💡 نصيحة: افتح في نافذة جديدة، ثم استخدم أداة لقطة الشاشة (Screenshot) لحفظ كصورة أو سجل الشاشة (Screen Record) لحفظ كفيديو
+          </p>
         </div>
       )}
     </div>

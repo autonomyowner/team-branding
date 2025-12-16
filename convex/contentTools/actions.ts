@@ -125,48 +125,63 @@ Then output an enhanced video concept with clear sections:
   },
 });
 
-// Step 2: Generate image using OpenRouter
+// Step 2: Generate visual HTML content using OpenRouter
 export const generateImage = action({
   args: {
     generationId: v.id("contentGenerations"),
     enhancedPrompt: v.string(),
   },
-  handler: async (ctx, args): Promise<{ imageUrl: string }> => {
+  handler: async (ctx, args): Promise<{ htmlContent: string }> => {
     const { internal } = await import("../_generated/api");
     const { generationId, enhancedPrompt } = args;
 
     try {
       // Check if API key is configured
-      if (!process.env.OPENAI_API_KEY) {
-        throw new Error("OPENAI_API_KEY environment variable is not set");
+      if (!process.env.OPENROUTER_API_KEY) {
+        throw new Error("OPENROUTER_API_KEY environment variable is not set");
       }
 
-      // Use OpenAI's API directly for image generation (DALL-E 3)
-      // Note: OpenRouter doesn't support image generation, only text models
-      console.log("Calling OpenAI DALL-E 3 API...");
-      const response = await fetch("https://api.openai.com/v1/images/generations", {
+      console.log("Generating HTML visual content with OpenRouter...");
+
+      const htmlPrompt = `You are an expert at creating stunning visual HTML pages optimized for social media content.
+
+Based on this enhanced prompt:
+"${enhancedPrompt}"
+
+Create a complete, standalone HTML page that visualizes this concept. The page should be:
+- Visually stunning with modern CSS (gradients, animations, shadows, etc.)
+- Optimized for 1080x1080px (Instagram) or 1080x1920px (TikTok/Reels) dimensions
+- Include smooth CSS animations that loop
+- Use beautiful typography and color schemes
+- No external dependencies (inline all CSS and JS)
+- Ready to screenshot or screen record
+
+Output ONLY the complete HTML code, starting with <!DOCTYPE html> and ending with </html>. No explanations, just pure HTML.`;
+
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
+          "HTTP-Referer": "https://p1-workspace.app",
+          "X-Title": "P1 Content Tools",
         },
         body: JSON.stringify({
-          model: "dall-e-3",
-          prompt: enhancedPrompt,
-          n: 1,
-          size: "1024x1024",
-          quality: "standard",
+          model: "anthropic/claude-3.5-sonnet",
+          messages: [
+            { role: "user", content: htmlPrompt }
+          ],
         }),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        let errorMessage = `Image generation error (${response.status}): ${response.statusText}`;
+        let errorMessage = `HTML generation error (${response.status}): ${response.statusText}`;
         try {
           const errorData = JSON.parse(errorText);
-          errorMessage = `Image generation error: ${errorData.error?.message || errorText}`;
+          errorMessage = `HTML generation error: ${errorData.error?.message || errorText}`;
         } catch {
-          errorMessage = `Image generation error: ${errorText || response.statusText}`;
+          errorMessage = `HTML generation error: ${errorText || response.statusText}`;
         }
         throw new Error(errorMessage);
       }
@@ -174,24 +189,36 @@ export const generateImage = action({
       const data = await response.json();
 
       // Validate response structure
-      if (!data.data || !data.data[0] || !data.data[0].url) {
-        throw new Error("Invalid response structure from image generation API");
+      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        throw new Error("Invalid response structure from OpenRouter API");
       }
 
-      const imageUrl = data.data[0].url;
+      let htmlContent = data.choices[0].message.content;
+
+      // Extract HTML if wrapped in code blocks
+      const htmlMatch = htmlContent.match(/```html\n([\s\S]*?)\n```/) || htmlContent.match(/```\n([\s\S]*?)\n```/);
+      if (htmlMatch) {
+        htmlContent = htmlMatch[1];
+      }
+
+      // Clean up any leading/trailing whitespace
+      htmlContent = htmlContent.trim();
+
+      console.log("HTML content generated successfully");
 
       await ctx.runMutation(internal.contentTools.mutations.updateGeneration, {
         generationId,
-        resultUrl: imageUrl,
+        resultData: htmlContent,
         status: "completed",
         completedAt: Date.now(),
-        model: "dall-e-3",
+        model: "claude-3.5-sonnet",
       });
 
-      return { imageUrl };
+      return { htmlContent };
     } catch (error: any) {
-      const errorMessage = error.message || "Unknown error occurred during image generation";
-      console.error("generateImage error:", errorMessage, error);
+      const errorMessage = error.message || "Unknown error occurred during HTML generation";
+      console.error("generateImage error:", errorMessage);
+      console.error("Error stack:", error.stack);
 
       await ctx.runMutation(internal.contentTools.mutations.updateGeneration, {
         generationId,
