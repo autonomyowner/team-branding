@@ -1,10 +1,8 @@
-// @ts-nocheck - Circular dependency with internal mutations, resolved at runtime
 import { action } from "../_generated/server";
 import { v } from "convex/values";
 import { internal } from "../_generated/api";
 
 // Step 1: Enhance prompt using Haiku via OpenRouter
-// @ts-ignore - Circular dependency at build time, resolved at runtime
 export const enhancePrompt = action({
   args: {
     userPrompt: v.string(),
@@ -52,6 +50,11 @@ Then output an enhanced video concept with clear sections:
 - ENGAGEMENT: (call-to-action, retention tactics)`;
 
     try {
+      // Check if API key is configured
+      if (!process.env.OPENROUTER_API_KEY) {
+        throw new Error("OPENROUTER_API_KEY environment variable is not set");
+      }
+
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -69,11 +72,24 @@ Then output an enhanced video concept with clear sections:
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`OpenRouter API error: ${errorData.error?.message || response.statusText}`);
+        const errorText = await response.text();
+        let errorMessage = `OpenRouter API error (${response.status}): ${response.statusText}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = `OpenRouter API error: ${errorData.error?.message || errorText}`;
+        } catch {
+          errorMessage = `OpenRouter API error: ${errorText || response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
+
+      // Validate response structure
+      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        throw new Error("Invalid response structure from OpenRouter API");
+      }
+
       const enhancedPrompt = data.choices[0].message.content;
 
       // Update generation record via internal mutation
@@ -85,18 +101,21 @@ Then output an enhanced video concept with clear sections:
 
       return { generationId, enhancedPrompt };
     } catch (error: any) {
+      const errorMessage = error.message || "Unknown error occurred during prompt enhancement";
+      console.error("enhancePrompt error:", errorMessage, error);
+
       await ctx.runMutation(internal.contentTools.mutations.updateGeneration, {
         generationId,
         status: "failed",
-        error: error.message,
+        error: errorMessage,
       });
-      throw error;
+
+      throw new Error(errorMessage);
     }
   },
 });
 
 // Step 2: Generate image using OpenRouter
-// @ts-ignore - Circular dependency at build time, resolved at runtime
 export const generateImage = action({
   args: {
     generationId: v.id("contentGenerations"),
@@ -106,6 +125,11 @@ export const generateImage = action({
     const { generationId, enhancedPrompt } = args;
 
     try {
+      // Check if API key is configured
+      if (!process.env.OPENROUTER_API_KEY) {
+        throw new Error("OPENROUTER_API_KEY environment variable is not set");
+      }
+
       // Use OpenRouter's image generation endpoint (DALL-E 3)
       const response = await fetch("https://openrouter.ai/api/v1/images/generations", {
         method: "POST",
@@ -124,11 +148,24 @@ export const generateImage = action({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Image generation error: ${errorData.error?.message || response.statusText}`);
+        const errorText = await response.text();
+        let errorMessage = `Image generation error (${response.status}): ${response.statusText}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = `Image generation error: ${errorData.error?.message || errorText}`;
+        } catch {
+          errorMessage = `Image generation error: ${errorText || response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
+
+      // Validate response structure
+      if (!data.data || !data.data[0] || !data.data[0].url) {
+        throw new Error("Invalid response structure from image generation API");
+      }
+
       const imageUrl = data.data[0].url;
 
       await ctx.runMutation(internal.contentTools.mutations.updateGeneration, {
@@ -141,12 +178,16 @@ export const generateImage = action({
 
       return { imageUrl };
     } catch (error: any) {
+      const errorMessage = error.message || "Unknown error occurred during image generation";
+      console.error("generateImage error:", errorMessage, error);
+
       await ctx.runMutation(internal.contentTools.mutations.updateGeneration, {
         generationId,
         status: "failed",
-        error: error.message,
+        error: errorMessage,
       });
-      throw error;
+
+      throw new Error(errorMessage);
     }
   },
 });
