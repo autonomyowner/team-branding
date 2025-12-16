@@ -32,6 +32,7 @@ export const updateGeneration = internalMutation({
       v.literal("failed")
     )),
     resultUrl: v.optional(v.string()),
+    resultData: v.optional(v.string()),
     completedAt: v.optional(v.number()),
     model: v.optional(v.string()),
     error: v.optional(v.string()),
