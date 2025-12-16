@@ -175,9 +175,20 @@ export const addTask = mutation({
     editedBy: v.optional(v.string()),
   },
   handler: async (ctx, { workflowId, phaseId, task, editedBy }) => {
+    console.log("addTask called with:", { workflowId, phaseId, task, editedBy });
+
     const workflow = await ctx.db.get(workflowId);
+    console.log("workflow found:", workflow ? "yes" : "no");
+
     if (!workflow) {
-      throw new Error("Workflow not found");
+      throw new Error(`Workflow not found for id: ${workflowId}`);
+    }
+
+    console.log("workflow phases:", workflow.phases?.map(p => p.id));
+
+    const phaseExists = workflow.phases?.some(p => p.id === phaseId);
+    if (!phaseExists) {
+      throw new Error(`Phase ${phaseId} not found in workflow. Available phases: ${workflow.phases?.map(p => p.id).join(", ")}`);
     }
 
     const taskId = `t${Date.now()}`;
@@ -205,6 +216,7 @@ export const addTask = mutation({
       version: workflow.version + 1,
     });
 
+    console.log("Task added successfully:", taskId);
     return taskId;
   },
 });
