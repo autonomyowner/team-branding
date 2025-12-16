@@ -385,40 +385,45 @@
 /* Add Task Form */
 .addTaskForm {
   display: flex;
+  flex-direction: row-reverse;
   gap: var(--space-2);
   padding: var(--space-3);
-  background: var(--bg-hover);
+  background: rgba(26, 26, 46, 0.5);
   border-radius: var(--radius-sm);
   margin-top: var(--space-2);
+  direction: rtl;
 }
 
 .addTaskInput {
   flex: 1;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: #1a1a2e;
+  border: 1px solid #333;
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
-  color: var(--text-primary);
+  color: #ffffff;
   font-family: var(--font-body);
+  direction: rtl;
+  text-align: right;
 }
 
 .addTaskInput:focus {
   outline: none;
   border-color: var(--accent);
+  background: #1a1a2e;
 }
 
 .addTaskInput::placeholder {
-  color: var(--text-muted);
+  color: #888;
 }
 
 .ownerSelect {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: #1a1a2e;
+  border: 1px solid #333;
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
-  color: var(--text-primary);
+  color: #ffffff;
   font-family: var(--font-body);
   min-width: 100px;
   cursor: pointer;
@@ -427,6 +432,11 @@
 .ownerSelect:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.ownerSelect option {
+  background: #1a1a2e;
+  color: #ffffff;
 }
 
 .addTaskBtn {
@@ -494,17 +504,20 @@
 /* Edit Task Input */
 .editTaskInput {
   flex: 1;
-  background: var(--bg-card);
+  background: #1a1a2e;
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
-  color: var(--text-primary);
+  color: #ffffff;
   font-family: var(--font-body);
+  direction: rtl;
+  text-align: right;
 }
 
 .editTaskInput:focus {
   outline: none;
+  background: #1a1a2e;
 }
 
 /* Phase Progress */

@@ -198,23 +198,34 @@ export default function TeamWorkflowDashboard() {
   };
 
   const handleAddTask = async (phaseId: string) => {
-    if (!workflowData || !newTaskText.trim()) return;
+    if (!workflowData) {
+      console.error("No workflow data available");
+      return;
+    }
+    if (!newTaskText.trim()) {
+      console.error("Task text is empty");
+      return;
+    }
 
-    await addTaskMutation({
-      workflowId: workflowData._id,
-      phaseId,
-      task: {
-        text: newTaskText.trim(),
-        textAr: newTaskText.trim(),
-        owner: newTaskOwner,
-      },
-      editedBy: user?.name || "Anonymous",
-    });
+    try {
+      await addTaskMutation({
+        workflowId: workflowData._id,
+        phaseId,
+        task: {
+          text: newTaskText.trim(),
+          textAr: newTaskText.trim(),
+          owner: newTaskOwner,
+        },
+        editedBy: user?.name || "Anonymous",
+      });
 
-    // Reset form
-    setNewTaskText("");
-    setNewTaskOwner("الكل");
-    setAddingTaskToPhase(null);
+      // Reset form
+      setNewTaskText("");
+      setNewTaskOwner("الكل");
+      setAddingTaskToPhase(null);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   const handleEditTask = async (phaseId: string, taskId: string) => {
