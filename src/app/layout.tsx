@@ -16,8 +16,26 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body>
-        <div className="w-full bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 text-white py-4 px-4 flex items-center justify-center shadow-lg">
-          <p className="text-xl font-bold tracking-wide">
+        <div style={{
+          width: '100%',
+          background: 'rgba(22, 24, 32, 0.75)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          padding: '12px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backdropFilter: 'blur(8px)'
+        }}>
+          <p style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            margin: 0,
+            textAlign: 'center',
+            background: 'linear-gradient(90deg, #3b82f6 0%, #06b6d4 50%, #0ea5e9 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>
             بسم الله توكلت على الله ولا حول وَلا قوة إلا بِاللهِ
           </p>
         </div>
