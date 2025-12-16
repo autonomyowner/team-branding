@@ -18,10 +18,10 @@ function getPasswordStrength(password: string): {
   if (/\d/.test(password)) score++;
   if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-  if (score <= 1) return { score: 1, label: "Weak" };
-  if (score <= 2) return { score: 2, label: "Fair" };
-  if (score <= 3) return { score: 3, label: "Good" };
-  return { score: 4, label: "Strong" };
+  if (score <= 1) return { score: 1, label: "ضعيفة" };
+  if (score <= 2) return { score: 2, label: "متوسطة" };
+  if (score <= 3) return { score: 3, label: "جيدة" };
+  return { score: 4, label: "قوية" };
 }
 
 export default function SignupPage() {
@@ -57,25 +57,25 @@ export default function SignupPage() {
 
     // Validation
     if (!formData.name || !formData.email || !formData.company || !formData.password) {
-      setError("Please fill in all fields");
+      setError("يرجى ملء جميع الحقول");
       setIsSubmitting(false);
       return;
     }
 
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError("يجب أن تتكون كلمة المرور من 8 أحرف على الأقل");
       setIsSubmitting(false);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError("كلمتا المرور غير متطابقتين");
       setIsSubmitting(false);
       return;
     }
 
     if (!acceptTerms) {
-      setError("Please accept the terms and conditions");
+      setError("يرجى الموافقة على الشروط والأحكام");
       setIsSubmitting(false);
       return;
     }
@@ -90,7 +90,7 @@ export default function SignupPage() {
     if (result.success) {
       router.push("/dashboard");
     } else {
-      setError(result.error || "Signup failed");
+      setError(result.error || "فشل إنشاء الحساب");
       setIsSubmitting(false);
     }
   };
@@ -111,10 +111,10 @@ export default function SignupPage() {
         <div className={styles.authHeader}>
           <Link href="/" className={styles.logo}>
             <span className={styles.logoMark}>N</span>
-            <span className={styles.logoText}>Nexus</span>
+            <span className={styles.logoText}>نيكسس</span>
           </Link>
-          <h1>Create your account</h1>
-          <p>Start your 14-day free trial</p>
+          <h1>إنشاء حسابك</h1>
+          <p>ابدأ تجربتك المجانية لمدة 14 يوماً</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.authForm}>
@@ -130,28 +130,28 @@ export default function SignupPage() {
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label htmlFor="name">Full Name</label>
+              <label htmlFor="name">الاسم الكامل</label>
               <input
                 type="text"
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="John Smith"
+                placeholder="محمد أحمد"
                 autoComplete="name"
                 disabled={isSubmitting}
               />
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="company">Company</label>
+              <label htmlFor="company">الشركة</label>
               <input
                 type="text"
                 id="company"
                 name="company"
                 value={formData.company}
                 onChange={handleChange}
-                placeholder="Acme Inc."
+                placeholder="اسم الشركة"
                 autoComplete="organization"
                 disabled={isSubmitting}
               />
@@ -159,7 +159,7 @@ export default function SignupPage() {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="email">Work Email</label>
+            <label htmlFor="email">البريد الإلكتروني</label>
             <input
               type="email"
               id="email"
@@ -173,14 +173,14 @@ export default function SignupPage() {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">كلمة المرور</label>
             <input
               type="password"
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Minimum 8 characters"
+              placeholder="8 أحرف على الأقل"
               autoComplete="new-password"
               disabled={isSubmitting}
             />
@@ -203,21 +203,21 @@ export default function SignupPage() {
                   ))}
                 </div>
                 <span className={styles.strengthText}>
-                  Password strength: {passwordStrength.label}
+                  قوة كلمة المرور: {passwordStrength.label}
                 </span>
               </>
             )}
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">تأكيد كلمة المرور</label>
             <input
               type="password"
               id="confirmPassword"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              placeholder="Confirm your password"
+              placeholder="أعد إدخال كلمة المرور"
               autoComplete="new-password"
               disabled={isSubmitting}
             />
@@ -231,9 +231,9 @@ export default function SignupPage() {
               disabled={isSubmitting}
             />
             <span>
-              I agree to the{" "}
-              <Link href="/terms">Terms of Service</Link> and{" "}
-              <Link href="/privacy">Privacy Policy</Link>
+              أوافق على{" "}
+              <Link href="/terms">شروط الخدمة</Link> و{" "}
+              <Link href="/privacy">سياسة الخصوصية</Link>
             </span>
           </label>
 
@@ -245,13 +245,13 @@ export default function SignupPage() {
             {isSubmitting ? (
               <span className={styles.spinner} />
             ) : (
-              "Create account"
+              "إنشاء الحساب"
             )}
           </button>
         </form>
 
         <div className={styles.authDivider}>
-          <span>or continue with</span>
+          <span>أو تابع باستخدام</span>
         </div>
 
         <div className={styles.socialButtons}>
@@ -286,13 +286,13 @@ export default function SignupPage() {
 
         <div className={styles.guestOption}>
           <Link href="/dashboard" className={styles.guestButton}>
-            Continue as Guest
+            المتابعة كزائر
           </Link>
         </div>
 
         <p className={styles.authFooter}>
-          Already have an account?{" "}
-          <Link href="/login">Sign in</Link>
+          لديك حساب بالفعل؟{" "}
+          <Link href="/login">تسجيل الدخول</Link>
         </p>
       </motion.div>
     </div>

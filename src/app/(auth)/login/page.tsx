@@ -22,7 +22,7 @@ export default function LoginPage() {
 
     // Basic validation
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setError("يرجى ملء جميع الحقول");
       setIsSubmitting(false);
       return;
     }
@@ -32,7 +32,7 @@ export default function LoginPage() {
     if (result.success) {
       router.push("/dashboard");
     } else {
-      setError(result.error || "Login failed");
+      setError(result.error || "فشل تسجيل الدخول");
       setIsSubmitting(false);
     }
   };
@@ -53,10 +53,10 @@ export default function LoginPage() {
         <div className={styles.authHeader}>
           <Link href="/" className={styles.logo}>
             <span className={styles.logoMark}>N</span>
-            <span className={styles.logoText}>Nexus</span>
+            <span className={styles.logoText}>نيكسس</span>
           </Link>
-          <h1>Welcome back</h1>
-          <p>Sign in to your account to continue</p>
+          <h1>مرحباً بعودتك</h1>
+          <p>سجل الدخول إلى حسابك للمتابعة</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.authForm}>
@@ -71,7 +71,7 @@ export default function LoginPage() {
           )}
 
           <div className={styles.formGroup}>
-            <label htmlFor="email">Email address</label>
+            <label htmlFor="email">البريد الإلكتروني</label>
             <input
               type="email"
               id="email"
@@ -85,9 +85,9 @@ export default function LoginPage() {
 
           <div className={styles.formGroup}>
             <div className={styles.labelRow}>
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">كلمة المرور</label>
               <Link href="/forgot-password" className={styles.forgotLink}>
-                Forgot password?
+                نسيت كلمة المرور؟
               </Link>
             </div>
             <input
@@ -95,7 +95,7 @@ export default function LoginPage() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="أدخل كلمة المرور"
               autoComplete="current-password"
               disabled={isSubmitting}
             />
@@ -109,13 +109,13 @@ export default function LoginPage() {
             {isSubmitting ? (
               <span className={styles.spinner} />
             ) : (
-              "Sign in"
+              "تسجيل الدخول"
             )}
           </button>
         </form>
 
         <div className={styles.authDivider}>
-          <span>or continue with</span>
+          <span>أو تابع باستخدام</span>
         </div>
 
         <div className={styles.socialButtons}>
@@ -150,13 +150,13 @@ export default function LoginPage() {
 
         <div className={styles.guestOption}>
           <Link href="/dashboard" className={styles.guestButton}>
-            Continue as Guest
+            المتابعة كزائر
           </Link>
         </div>
 
         <p className={styles.authFooter}>
-          Don&apos;t have an account?{" "}
-          <Link href="/signup">Create one now</Link>
+          ليس لديك حساب؟{" "}
+          <Link href="/signup">إنشاء حساب جديد</Link>
         </p>
       </motion.div>
     </div>

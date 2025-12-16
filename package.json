@@ -1,5 +1,5 @@
 {
-  "name": "nexus-saas-landing",
+  "name": "branding-team",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/core": "^0.37.4",
+    "@convex-dev/auth": "^0.0.90",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "convex": "^1.31.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.11.17",
     "nanoid": "^5.1.6",

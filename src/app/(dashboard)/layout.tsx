@@ -12,43 +12,12 @@ import styles from "./dashboard.module.css";
 
 const navItems = [
   {
-    name: "Projects",
+    name: "لوحة العمل",
     href: "/dashboard",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-      </svg>
-    ),
-  },
-  {
-    name: "Boards",
-    href: "/dashboard/boards",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="3" width="5" height="18" rx="1" />
-        <rect x="10" y="3" width="5" height="12" rx="1" />
-        <rect x="17" y="3" width="5" height="8" rx="1" />
-      </svg>
-    ),
-  },
-  {
-    name: "Team",
-    href: "/dashboard/team",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-  },
-  {
-    name: "Settings",
-    href: "/dashboard/settings",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="M3 9h18M9 21V9" />
       </svg>
     ),
   },
@@ -82,17 +51,17 @@ function NotificationButton() {
             transition={{ duration: 0.15 }}
           >
             <div className={styles.notificationHeader}>
-              <span>Notifications</span>
+              <span>الإشعارات</span>
               {unreadCount > 0 && (
                 <button onClick={markAllAsRead} className={styles.markAllRead}>
-                  Mark all read
+                  تحديد الكل كمقروء
                 </button>
               )}
             </div>
             <div className={styles.notificationList}>
               {notifications.length === 0 ? (
                 <div className={styles.emptyNotifications}>
-                  No notifications yet
+                  لا توجد إشعارات
                 </div>
               ) : (
                 notifications.slice(0, 5).map((notification) => (
@@ -111,8 +80,8 @@ function NotificationButton() {
               )}
             </div>
             {notifications.length > 5 && (
-              <Link href="/dashboard/activity" className={styles.viewAllLink}>
-                View all notifications
+              <Link href="/dashboard" className={styles.viewAllLink}>
+                عرض كل الإشعارات
               </Link>
             )}
           </motion.div>
@@ -132,7 +101,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     return (
       <div className={styles.loadingScreen}>
         <div className={styles.loadingSpinner} />
-        <p>Loading...</p>
+        <p>جاري التحميل...</p>
       </div>
     );
   }
@@ -142,7 +111,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     return (
       <div className={styles.loadingScreen}>
         <div className={styles.loadingSpinner} />
-        <p>Loading...</p>
+        <p>جاري التحميل...</p>
       </div>
     );
   }
@@ -155,13 +124,13 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       >
         <div className={styles.sidebarHeader}>
           <Link href="/dashboard" className={styles.logo}>
-            <span className={styles.logoMark}>N</span>
-            {!sidebarCollapsed && <span className={styles.logoText}>Nexus</span>}
+            <span className={styles.logoMark}>BT</span>
+            {!sidebarCollapsed && <span className={styles.logoText}>BRANDING TEAM</span>}
           </Link>
           <button
             className={styles.collapseBtn}
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={sidebarCollapsed ? "توسيع القائمة" : "طي القائمة"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               {sidebarCollapsed ? (
@@ -210,12 +179,24 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       <div className={styles.mainContent}>
         {/* Top Bar */}
         <header className={styles.topBar}>
+          {/* Expand Sidebar Button - shows when collapsed */}
+          {sidebarCollapsed && (
+            <button
+              className={styles.expandSidebarBtn}
+              onClick={() => setSidebarCollapsed(false)}
+              aria-label="توسيع القائمة"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h18M3 6h18M3 18h18" />
+              </svg>
+            </button>
+          )}
           <div className={styles.searchBar}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
               <path d="M21 21l-4.35-4.35" />
             </svg>
-            <input type="text" placeholder="Search boards, tasks, workflows..." />
+            <input type="text" placeholder="البحث في المهام والعناصر..." />
             <span className={styles.searchShortcut}>Ctrl+K</span>
           </div>
 
@@ -226,10 +207,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             {isGuest ? (
               <div className={styles.authButtons}>
                 <Link href="/login" className={styles.loginBtn}>
-                  Log in
+                  تسجيل الدخول
                 </Link>
                 <Link href="/signup" className={styles.signupBtn}>
-                  Sign up
+                  إنشاء حساب
                 </Link>
               </div>
             ) : (
@@ -262,26 +243,11 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                       <div className={styles.dropdownHeader}>
                         <span>{user.email}</span>
                       </div>
-                      <Link href="/dashboard/settings" className={styles.dropdownItem}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                          <circle cx="12" cy="7" r="4" />
-                        </svg>
-                        Profile Settings
-                      </Link>
-                      <Link href="/dashboard/settings" className={styles.dropdownItem}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
-                        Security
-                      </Link>
-                      <div className={styles.dropdownDivider} />
                       <button onClick={logout} className={styles.dropdownItem}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
                         </svg>
-                        Sign out
+                        تسجيل الخروج
                       </button>
                     </motion.div>
                   )}

@@ -1,5 +1,6 @@
 /* ==========================================
-   AUTH PAGES STYLES
+   AUTH PAGES - Refined & Elegant
+   Premium Glass Morphism Design
    ========================================== */
 
 .authPage {
@@ -7,15 +8,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: var(--space-10) var(--space-6);
   position: relative;
   overflow: hidden;
 }
 
+/* ==========================================
+   BACKGROUND EFFECTS
+   ========================================== */
 .authBackground {
   position: fixed;
   inset: 0;
-  background: var(--bg-primary);
+  background: var(--bg-void);
   z-index: 0;
 }
 
@@ -23,111 +27,156 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 60px 60px;
-  opacity: 0.3;
-  mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 1;
+  mask-image: radial-gradient(ellipse 100% 80% at 50% 20%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 100% 80% at 50% 20%, black, transparent);
 }
 
 .glowOrb {
   position: absolute;
-  top: 30%;
+  top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-  opacity: 0.3;
+  width: 800px;
+  height: 500px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(20, 184, 166, 0.15) 0%,
+    rgba(20, 184, 166, 0.05) 40%,
+    transparent 70%
+  );
   pointer-events: none;
+  filter: blur(40px);
 }
 
+/* ==========================================
+   AUTH CONTAINER - Glass Card
+   ========================================== */
 .authContainer {
   width: 100%;
-  max-width: 420px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  padding: 48px;
+  max-width: 440px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-12);
   position: relative;
   z-index: 1;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
+/* Top accent line */
 .authContainer::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  border-radius: var(--radius-full);
 }
 
+/* Subtle inner glow */
+.authContainer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
 .authHeader {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: var(--space-10);
 }
 
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   text-decoration: none;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-8);
 }
 
 .logoMark {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent);
-  color: var(--bg-primary);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: var(--bg-void);
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 400;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
 }
 
 .logoText {
   font-family: var(--font-display);
   font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
 .authHeader h1 {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 1.75rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   letter-spacing: -0.02em;
 }
 
 .authHeader p {
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
+  margin: 0;
 }
 
-/* Form Styles */
+/* ==========================================
+   FORM STYLES
+   ========================================== */
 .authForm {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--space-5);
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .formGroup label {
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: var(--text-xs);
+  font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .labelRow {
@@ -137,49 +186,56 @@
 }
 
 .forgotLink {
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
+  font-weight: 500;
   color: var(--accent);
   text-decoration: none;
   text-transform: none;
   letter-spacing: 0;
-  transition: opacity 0.2s ease;
+  transition: color var(--duration-fast) ease;
 }
 
 .forgotLink:hover {
-  opacity: 0.8;
+  color: var(--accent-light);
 }
 
 .formGroup input {
   width: 100%;
-  padding: 14px 16px;
-  background: var(--bg-primary);
+  padding: var(--space-4) var(--space-4);
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
+  font-size: var(--text-sm);
+  transition: all var(--duration-fast) ease;
 }
 
 .formGroup input::placeholder {
   color: var(--text-muted);
 }
 
+.formGroup input:hover {
+  border-color: var(--border-highlight);
+}
+
 .formGroup input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
 }
 
 .formGroup input:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Row for side-by-side inputs */
+/* Form Row - Side by Side */
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 @media (max-width: 480px) {
@@ -188,46 +244,58 @@
   }
 }
 
-/* Error Message */
+/* ==========================================
+   ERROR MESSAGE
+   ========================================== */
 .errorMessage {
-  background: rgba(255, 77, 77, 0.1);
-  border: 1px solid rgba(255, 77, 77, 0.3);
-  color: #ff6b6b;
-  padding: 12px 16px;
-  font-size: 0.875rem;
+  background: var(--error-subtle);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+  color: #fca5a5;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
-/* Submit Button */
+/* ==========================================
+   SUBMIT BUTTON
+   ========================================== */
 .submitButton {
   width: 100%;
-  padding: 16px 24px;
-  background: var(--accent);
-  color: var(--bg-primary);
+  padding: var(--space-4) var(--space-6);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: var(--bg-void);
   border: none;
+  border-radius: var(--radius-md);
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--duration-normal) var(--ease-out-expo);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   min-height: 52px;
+  margin-top: var(--space-2);
+  box-shadow: 0 4px 16px rgba(20, 184, 166, 0.25);
 }
 
 .submitButton:hover:not(:disabled) {
-  background: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.35);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .submitButton:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* Spinner */
@@ -235,23 +303,19 @@
   width: 20px;
   height: 20px;
   border: 2px solid transparent;
-  border-top-color: var(--bg-primary);
+  border-top-color: var(--bg-void);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Divider */
+/* ==========================================
+   DIVIDER
+   ========================================== */
 .authDivider {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin: 32px 0;
+  gap: var(--space-4);
+  margin: var(--space-8) 0;
 }
 
 .authDivider::before,
@@ -263,124 +327,144 @@
 }
 
 .authDivider span {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 
-/* Social Buttons */
+/* ==========================================
+   SOCIAL BUTTONS
+   ========================================== */
 .socialButtons {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .socialButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--bg-primary);
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .socialButton:hover {
+  background: rgba(0, 0, 0, 0.3);
   border-color: var(--border-highlight);
   color: var(--text-primary);
 }
 
-/* Guest Option */
+.socialButton svg {
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   GUEST OPTION
+   ========================================== */
 .guestOption {
-  margin-top: 24px;
+  margin-top: var(--space-6);
   text-align: center;
 }
 
 .guestButton {
-  display: inline-block;
-  padding: 14px 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-8);
   background: transparent;
   border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .guestButton:hover {
   border-color: var(--accent);
   border-style: solid;
   color: var(--accent);
+  background: var(--accent-subtle);
 }
 
-/* Footer */
+/* ==========================================
+   FOOTER
+   ========================================== */
 .authFooter {
   text-align: center;
-  margin-top: 24px;
-  font-size: 0.875rem;
+  margin-top: var(--space-6);
+  font-size: var(--text-sm);
   color: var(--text-secondary);
 }
 
 .authFooter a {
   color: var(--accent);
   text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.2s ease;
+  font-weight: 600;
+  transition: color var(--duration-fast) ease;
 }
 
 .authFooter a:hover {
-  opacity: 0.8;
+  color: var(--accent-light);
 }
 
-/* Password Strength */
+/* ==========================================
+   PASSWORD STRENGTH
+   ========================================== */
 .passwordStrength {
   display: flex;
   gap: 4px;
-  margin-top: 8px;
+  margin-top: var(--space-2);
 }
 
 .strengthBar {
   flex: 1;
   height: 3px;
   background: var(--border);
-  transition: background 0.3s ease;
-}
-
-.strengthBar.active {
-  background: var(--accent);
+  border-radius: var(--radius-full);
+  transition: background var(--duration-fast) ease;
 }
 
 .strengthBar.weak {
-  background: #ff6b6b;
+  background: var(--error);
 }
 
 .strengthBar.medium {
-  background: #ffd93d;
+  background: var(--warning);
 }
 
 .strengthBar.strong {
-  background: #6bcb77;
+  background: var(--success);
 }
 
 .strengthText {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
-/* Checkbox */
+/* ==========================================
+   CHECKBOX
+   ========================================== */
 .checkbox {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--space-3);
   cursor: pointer;
 }
 
@@ -390,10 +474,11 @@
   margin: 0;
   accent-color: var(--accent);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .checkbox span {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -401,18 +486,31 @@
 .checkbox a {
   color: var(--accent);
   text-decoration: none;
+  transition: color var(--duration-fast) ease;
 }
 
+.checkbox a:hover {
+  color: var(--accent-light);
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
 @media (max-width: 480px) {
   .authContainer {
-    padding: 32px 24px;
+    padding: var(--space-8) var(--space-6);
+    border-radius: var(--radius-lg);
   }
 
   .authHeader h1 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 
   .socialButtons {
     grid-template-columns: 1fr;
+  }
+
+  .logo {
+    margin-bottom: var(--space-6);
   }
 }

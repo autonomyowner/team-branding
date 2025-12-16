@@ -8,16 +8,17 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { isConvexConfigured } from "@/convex/ConvexClientProvider";
 
 // Types
 export interface User {
   id: string;
   email: string;
   name: string;
-  company: string;
-  role: string;
+  company?: string;
+  role?: string;
   avatar?: string;
-  createdAt: string;
+  createdAt?: string;
   isGuest?: boolean;
 }
 
@@ -42,57 +43,57 @@ interface SignupData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock user database (in real app, this would be API calls)
-const USERS_STORAGE_KEY = "nexus_users";
-const CURRENT_USER_KEY = "nexus_current_user";
-
 // Guest user template
 const GUEST_USER: User = {
   id: "guest-user",
-  email: "guest@nexus.app",
+  email: "guest@brandingteam.app",
   name: "Guest User",
-  company: "Nexus",
+  company: "BRANDING TEAM",
   role: "Guest",
   createdAt: new Date().toISOString(),
   isGuest: true,
 };
 
-function getStoredUsers(): Record<string, { user: User; password: string }> {
-  if (typeof window === "undefined") return {};
-  const stored = localStorage.getItem(USERS_STORAGE_KEY);
-  return stored ? JSON.parse(stored) : {};
-}
+// Local storage keys
+const USERS_STORAGE_KEY = "bt_users";
+const CURRENT_USER_KEY = "bt_current_user";
 
-function saveUsers(users: Record<string, { user: User; password: string }>) {
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-}
-
-function getCurrentUser(): User | null {
-  if (typeof window === "undefined") return null;
-  const stored = localStorage.getItem(CURRENT_USER_KEY);
-  return stored ? JSON.parse(stored) : null;
-}
-
-function setCurrentUser(user: User | null) {
-  if (user) {
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-  } else {
-    localStorage.removeItem(CURRENT_USER_KEY);
-  }
-}
-
-export function AuthProvider({ children }: { children: ReactNode }) {
+// LocalStorage-based auth (fallback when Convex is not configured)
+function useLocalStorageAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Check for existing session on mount, default to guest
+  function getStoredUsers(): Record<string, { user: User; password: string }> {
+    if (typeof window === "undefined") return {};
+    const stored = localStorage.getItem(USERS_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : {};
+  }
+
+  function saveUsers(users: Record<string, { user: User; password: string }>) {
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+  }
+
+  function getCurrentUser(): User | null {
+    if (typeof window === "undefined") return null;
+    const stored = localStorage.getItem(CURRENT_USER_KEY);
+    return stored ? JSON.parse(stored) : null;
+  }
+
+  function setCurrentUser(user: User | null) {
+    if (user) {
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(CURRENT_USER_KEY);
+    }
+  }
+
+  // Check for existing session on mount
   useEffect(() => {
     const storedUser = getCurrentUser();
     if (storedUser) {
       setUser(storedUser);
     } else {
-      // Default to guest mode
       setUser(GUEST_USER);
       setCurrentUser(GUEST_USER);
     }
@@ -104,8 +105,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string
   ): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
-
-    // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     const users = getStoredUsers();
@@ -124,7 +123,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(userRecord.user);
     setCurrentUser(userRecord.user);
     setIsLoading(false);
-
     return { success: true };
   };
 
@@ -132,8 +130,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     data: SignupData
   ): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
-
-    // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     const users = getStoredUsers();
@@ -160,12 +156,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(newUser);
     setCurrentUser(newUser);
     setIsLoading(false);
-
     return { success: true };
   };
 
   const logout = () => {
-    // Return to guest mode instead of null
     setUser(GUEST_USER);
     setCurrentUser(GUEST_USER);
     router.push("/dashboard");
@@ -183,7 +177,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(updatedUser);
     setCurrentUser(updatedUser);
 
-    // Update in storage
     const users = getStoredUsers();
     const emailKey = user.email.toLowerCase();
     if (users[emailKey]) {
@@ -192,20 +185,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user && !user.isGuest,
+    isGuest: !!user?.isGuest,
+    login,
+    signup,
+    logout,
+    continueAsGuest,
+    updateUser,
+  };
+}
+
+// TODO: Convex auth will be enabled after running `npx convex dev`
+// Once Convex is configured, you can use Convex Auth for real authentication
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  // Always use localStorage auth for now (Convex auth will be integrated later)
+  const localStorageAuth = useLocalStorageAuth();
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        isAuthenticated: !!user && !user.isGuest,
-        isGuest: !!user?.isGuest,
-        login,
-        signup,
-        logout,
-        continueAsGuest,
-        updateUser,
-      }}
-    >
+    <AuthContext.Provider value={localStorageAuth}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,37 +1,39 @@
 /* ==========================================
-   DASHBOARD LAYOUT
+   DASHBOARD LAYOUT - Clean & Professional
+   Modern Workspace Interface
    ========================================== */
 
+/* ==========================================
+   LOADING SCREEN
+   ========================================== */
 .loadingScreen {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--space-4);
   background: var(--bg-primary);
 }
 
 .loadingSpinner {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: 3px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .loadingScreen p {
   color: var(--text-muted);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
+  margin: 0;
 }
 
+/* ==========================================
+   DASHBOARD LAYOUT
+   ========================================== */
 .dashboardLayout {
   display: flex;
   min-height: 100vh;
@@ -41,17 +43,16 @@
 /* ==========================================
    SIDEBAR
    ========================================== */
-
 .sidebar {
   width: 260px;
   background: var(--bg-secondary);
-  border-right: 1px solid var(--border);
+  border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  transition: width 0.3s var(--ease-out-expo);
+  transition: width var(--duration-normal) var(--ease-out-expo);
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
   height: 100vh;
   z-index: 100;
 }
@@ -60,38 +61,43 @@
   width: 72px;
 }
 
+/* Sidebar Header */
 .sidebarHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: var(--space-5);
   border-bottom: 1px solid var(--border);
+  min-height: 64px;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   text-decoration: none;
 }
 
 .logoMark {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent);
-  color: var(--bg-primary);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: var(--bg-void);
   font-family: var(--font-display);
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25);
 }
 
 .logoText {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -105,14 +111,16 @@
   justify-content: center;
   background: transparent;
   border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .collapseBtn:hover {
   border-color: var(--border-highlight);
   color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 .collapseBtn svg {
@@ -124,41 +132,45 @@
   display: none;
 }
 
-/* Navigation */
+/* Sidebar Navigation */
 .sidebarNav {
   flex: 1;
-  padding: 16px 12px;
+  padding: var(--space-4) var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   overflow-y: auto;
 }
 
 .navItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   color: var(--text-secondary);
   text-decoration: none;
   position: relative;
-  transition: all 0.2s ease;
-  border-radius: 4px;
+  transition: all var(--duration-fast) ease;
+  border-radius: var(--radius-md);
 }
 
 .navItem:hover {
   color: var(--text-primary);
-  background: var(--bg-elevated);
+  background: var(--bg-hover);
 }
 
 .navItem.active {
   color: var(--accent);
+  background: var(--accent-subtle);
 }
 
 .navIcon {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navIcon svg {
@@ -167,25 +179,25 @@
 }
 
 .navLabel {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   white-space: nowrap;
 }
 
 .activeIndicator {
   position: absolute;
-  left: 0;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
-  height: 24px;
+  height: 20px;
   background: var(--accent);
-  border-radius: 0 2px 2px 0;
+  border-radius: var(--radius-full) 0 0 var(--radius-full);
 }
 
 .sidebar.collapsed .navItem {
   justify-content: center;
-  padding: 12px;
+  padding: var(--space-3);
 }
 
 .sidebar.collapsed .navLabel {
@@ -193,58 +205,58 @@
 }
 
 .sidebar.collapsed .activeIndicator {
-  left: 50%;
+  right: 50%;
   top: auto;
   bottom: 0;
-  transform: translateX(-50%);
-  width: 24px;
+  transform: translateX(50%);
+  width: 20px;
   height: 3px;
-  border-radius: 2px 2px 0 0;
+  border-radius: var(--radius-full) var(--radius-full) 0 0;
 }
 
 /* Sidebar Footer */
 .sidebarFooter {
-  padding: 16px;
+  padding: var(--space-4);
   border-top: 1px solid var(--border);
 }
 
 .usageCard {
   background: var(--bg-primary);
   border: 1px solid var(--border);
-  padding: 16px;
-  border-radius: 4px;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
 }
 
 .usageHeader {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .usageBar {
   height: 4px;
   background: var(--border);
-  border-radius: 2px;
+  border-radius: var(--radius-full);
   overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .usageProgress {
   height: 100%;
   background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.3s ease;
+  border-radius: var(--radius-full);
+  transition: width var(--duration-normal) ease;
 }
 
 .usageText {
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   color: var(--text-muted);
 }
 
 .sidebar.collapsed .usageCard {
-  padding: 8px;
+  padding: var(--space-2);
 }
 
 .sidebar.collapsed .usageHeader,
@@ -256,49 +268,80 @@
 /* ==========================================
    MAIN CONTENT
    ========================================== */
-
 .mainContent {
   flex: 1;
-  margin-left: 260px;
+  margin-right: 260px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  transition: margin-left 0.3s var(--ease-out-expo);
+  transition: margin-right var(--duration-normal) var(--ease-out-expo);
 }
 
 .sidebar.collapsed ~ .mainContent {
-  margin-left: 72px;
+  margin-right: 72px;
 }
 
-/* Top Bar */
+/* ==========================================
+   TOP BAR
+   ========================================== */
 .topBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 16px 32px;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-8);
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 50;
+  min-height: 64px;
 }
 
+/* Expand Sidebar Button */
+.expandSidebarBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  flex-shrink: 0;
+}
+
+.expandSidebarBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.expandSidebarBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Search Bar */
 .searchBar {
   flex: 1;
   max-width: 480px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   background: var(--bg-primary);
   border: 1px solid var(--border);
-  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) ease;
 }
 
 .searchBar:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
 }
 
 .searchBar svg {
@@ -314,7 +357,8 @@
   border: none;
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
+  padding: 0;
 }
 
 .searchBar input::placeholder {
@@ -326,18 +370,28 @@
 }
 
 .searchShortcut {
-  padding: 4px 8px;
+  padding: var(--space-1) var(--space-2);
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  font-size: 0.7rem;
+  font-size: 10px;
+  font-weight: 500;
   color: var(--text-muted);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
 }
 
+/* Top Bar Actions */
 .topBarActions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
+}
+
+/* ==========================================
+   NOTIFICATION BUTTON
+   ========================================== */
+.notificationContainer {
+  position: relative;
 }
 
 .notificationBtn {
@@ -348,20 +402,40 @@
   justify-content: center;
   background: transparent;
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
   cursor: pointer;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .notificationBtn:hover {
   border-color: var(--border-highlight);
   color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 .notificationBtn svg {
   width: 18px;
   height: 18px;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--bg-void);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 4px rgba(20, 184, 166, 0.3);
 }
 
 .notificationDot {
@@ -374,7 +448,128 @@
   border-radius: 50%;
 }
 
-/* User Menu */
+/* Notification Dropdown */
+.notificationDropdown {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  width: 360px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  z-index: 100;
+  max-height: 480px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+}
+
+.notificationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.notificationHeader span {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.markAllRead {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.markAllRead:hover {
+  opacity: 0.8;
+}
+
+.notificationList {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.emptyNotifications {
+  padding: var(--space-10) var(--space-4);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.notificationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: background var(--duration-fast) ease;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.notificationItem:hover {
+  background: var(--bg-hover);
+}
+
+.notificationItem.unread {
+  background: var(--accent-subtle);
+}
+
+.notificationContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.notificationTitle {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.notificationMessage {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.unreadDot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.viewAllLink {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  color: var(--accent);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  border-top: 1px solid var(--border);
+  transition: background var(--duration-fast) ease;
+}
+
+.viewAllLink:hover {
+  background: var(--bg-hover);
+}
+
+/* ==========================================
+   USER MENU
+   ========================================== */
 .userMenu {
   position: relative;
 }
@@ -382,16 +577,18 @@
 .userMenuBtn {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   background: transparent;
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .userMenuBtn:hover {
   border-color: var(--border-highlight);
+  background: var(--bg-hover);
 }
 
 .userMenuBtn svg {
@@ -406,68 +603,72 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent);
-  color: var(--bg-primary);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: var(--bg-void);
   font-family: var(--font-display);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
 }
 
 .userInfo {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: flex-end;
+  gap: 1px;
 }
 
 .userName {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--text-primary);
 }
 
 .userCompany {
-  font-size: 0.7rem;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
 .userDropdown {
   position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+  top: calc(100% + var(--space-2));
+  left: 0;
   width: 240px;
-  background: var(--bg-secondary);
+  background: var(--bg-card);
   border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   z-index: 100;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
 }
 
 .dropdownHeader {
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border);
 }
 
 .dropdownHeader span {
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   color: var(--text-muted);
 }
 
 .dropdownItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   background: transparent;
   border: none;
   width: 100%;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .dropdownItem:hover {
-  background: var(--bg-elevated);
+  background: var(--bg-hover);
   color: var(--text-primary);
 }
 
@@ -479,62 +680,71 @@
 .dropdownDivider {
   height: 1px;
   background: var(--border);
-  margin: 4px 0;
+  margin: var(--space-1) 0;
 }
 
-/* Auth Buttons (Guest Mode) */
+/* ==========================================
+   AUTH BUTTONS (Guest Mode)
+   ========================================== */
 .authButtons {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .loginBtn {
-  padding: 10px 20px;
+  padding: var(--space-2) var(--space-5);
   background: transparent;
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .loginBtn:hover {
   border-color: var(--border-highlight);
   color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 .signupBtn {
-  padding: 10px 20px;
+  padding: var(--space-2) var(--space-5);
   background: var(--accent);
   border: none;
-  color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  color: var(--bg-void);
   font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) ease;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25);
 }
 
 .signupBtn:hover {
-  opacity: 0.9;
+  background: var(--accent-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.35);
 }
 
-/* Page Content */
+/* ==========================================
+   PAGE CONTENT
+   ========================================== */
 .pageContent {
   flex: 1;
-  padding: 32px;
+  padding: var(--space-8);
   overflow-y: auto;
 }
 
 /* ==========================================
    RESPONSIVE
    ========================================== */
-
 @media (max-width: 1024px) {
   .sidebar {
     width: 72px;
@@ -550,7 +760,7 @@
 
   .sidebar .navItem {
     justify-content: center;
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .sidebar .collapseBtn {
@@ -558,15 +768,15 @@
   }
 
   .mainContent {
-    margin-left: 72px;
+    margin-right: 72px;
   }
 
   .topBar {
-    padding: 16px 20px;
+    padding: var(--space-4) var(--space-5);
   }
 
   .pageContent {
-    padding: 20px;
+    padding: var(--space-5);
   }
 
   .userInfo {
@@ -580,7 +790,12 @@
   }
 
   .mainContent {
-    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .topBar {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
   }
 
   .searchBar {
@@ -592,158 +807,21 @@
   }
 
   .authButtons {
-    gap: 8px;
+    gap: var(--space-2);
   }
 
   .loginBtn,
   .signupBtn {
-    padding: 8px 14px;
-    font-size: 0.8rem;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
   }
-}
 
-/* ==========================================
-   NOTIFICATION DROPDOWN
-   ========================================== */
+  .pageContent {
+    padding: var(--space-4);
+  }
 
-.notificationContainer {
-  position: relative;
-}
-
-.notificationBadge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent);
-  color: var(--bg-primary);
-  font-size: 0.65rem;
-  font-weight: 600;
-  border-radius: 9px;
-}
-
-.notificationDropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: 360px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  z-index: 100;
-  max-height: 480px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.notificationHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.notificationHeader span {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.markAllRead {
-  background: transparent;
-  border: none;
-  color: var(--accent);
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.markAllRead:hover {
-  opacity: 0.8;
-}
-
-.notificationList {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.emptyNotifications {
-  padding: 40px 16px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.875rem;
-}
-
-.notificationItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  border-bottom: 1px solid var(--border);
-}
-
-.notificationItem:hover {
-  background: var(--bg-elevated);
-}
-
-.notificationItem.unread {
-  background: rgba(0, 255, 242, 0.03);
-}
-
-.notificationContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.notificationTitle {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.notificationMessage {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.unreadDot {
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-
-.viewAllLink {
-  display: block;
-  padding: 12px 16px;
-  text-align: center;
-  color: var(--accent);
-  font-size: 0.8rem;
-  text-decoration: none;
-  border-top: 1px solid var(--border);
-  transition: background 0.2s ease;
-}
-
-.viewAllLink:hover {
-  background: var(--bg-elevated);
-}
-
-@media (max-width: 640px) {
   .notificationDropdown {
     width: 300px;
-    right: -60px;
+    left: -100px;
   }
 }

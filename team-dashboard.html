@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة سير عمل الفريق</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #141416;
+            --bg-card: #1a1a1f;
+            --bg-hover: #242429;
+            --text-primary: #fafafa;
+            --text-secondary: #8a8a8f;
+            --text-muted: #5a5a5f;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-purple: #8b5cf6;
+            --border: #2a2a2f;
+            --border-light: #3a3a3f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.8;
+            direction: rtl;
+        }
+
+        /* Header */
+        .header {
+            padding: 2rem 3rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Main Layout */
+        .main {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            padding: 2rem 0;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        /* Team Members */
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .team-member:hover {
+            background: var(--bg-hover);
+        }
+
+        .team-member.active {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+        }
+
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .member-avatar.wahab { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .member-avatar.azeddine { background: linear-gradient(135deg, #10b981, #059669); }
+        .member-avatar.sohir { background: linear-gradient(135deg, #ec4899, #db2777); }
+        .member-avatar.hythem { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .member-avatar.meamar { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.1rem;
+        }
+
+        .member-role {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        /* Navigation */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .nav-item.active .nav-dot { background: var(--accent-green); }
+
+        /* Content Area */
+        .content {
+            padding: 2rem 3rem;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .content-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Phase Cards */
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .phase-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .phase-card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+        }
+
+        .phase-number {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        .phase-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        .phase-badge {
+            font-size: 0.7rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .badge-progress {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-orange);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-pending {
+            background: rgba(138, 138, 143, 0.15);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .badge-complete {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Tasks */
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item:hover {
+            padding-right: 0.5rem;
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-light);
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .task-checkbox.checked {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        .task-checkbox.checked::after {
+            content: "✓";
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .task-owner {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 0.2rem 0.5rem;
+            background: var(--bg-hover);
+            border-radius: 4px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-hover);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        /* Section Divider */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 3rem 0 2rem;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .section-divider span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* Team Roles Grid */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .role-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .role-card:hover {
+            border-color: var(--border-light);
+        }
+
+        .role-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .role-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .role-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .role-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .role-responsibilities {
+            list-style: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .role-responsibilities li {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 0.4rem 0;
+            padding-right: 1rem;
+            position: relative;
+        }
+
+        .role-responsibilities li::before {
+            content: "←";
+            position: absolute;
+            right: 0;
+            color: var(--text-muted);
+        }
+
+        /* Calendar/Schedule */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .schedule-day {
+            text-align: center;
+            padding: 1rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .schedule-day:hover {
+            border-color: var(--border-light);
+        }
+
+        .schedule-day.meeting {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .day-name {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Meeting Card */
+        .meeting-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .meeting-title {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .meeting-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .meeting-detail span:first-child {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            width: 80px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .phase-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .phase-card:nth-child(1) { animation-delay: 0.1s; }
+        .phase-card:nth-child(2) { animation-delay: 0.2s; }
+        .phase-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .role-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .role-card:nth-child(1) { animation-delay: 0.1s; }
+        .role-card:nth-child(2) { animation-delay: 0.15s; }
+        .role-card:nth-child(3) { animation-delay: 0.2s; }
+        .role-card:nth-child(4) { animation-delay: 0.25s; }
+        .role-card:nth-child(5) { animation-delay: 0.3s; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .content-title {
+                font-size: 1.75rem;
+            }
+
+            .phases-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">مركز الفريق</div>
+        <div class="header-meta">لوحة سير العمل v1.0</div>
+    </header>
+
+    <main class="main">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">أعضاء الفريق</div>
+                <div class="team-member active">
+                    <div class="member-avatar wahab">وه</div>
+                    <div class="member-info">
+                        <div class="member-name">وهاب</div>
+                        <div class="member-role">مدير المنتج</div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar azeddine">عز</div>
+                    <div class="member-info">
+                        <div class="member-name">عز الدين</div>
+                        <div class="member-role">تقني</div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar sohir">سه</div>
+                    <div class="member-info">
+                        <div class="member-name">سهير</div>
+                        <div class="member-role">قائدة الإبداع</div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar hythem">هي</div>
+                    <div class="member-info">
+                        <div class="member-name">هيثم</div>
+                        <div class="member-role">صانع المحتوى</div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar meamar">مع</div>
+                    <div class="member-info">
+                        <div class="member-name">معمار</div>
+                        <div class="member-role">المبيعات والعلامة التجارية</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">التنقل</div>
+                <div class="nav-item active">
+                    <div class="nav-dot"></div>
+                    <span>لوحة التحكم</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-dot"></div>
+                    <span>المراحل</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-dot"></div>
+                    <span>أدوار الفريق</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-dot"></div>
+                    <span>الجدول</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="content">
+            <div class="content-header">
+                <h1 class="content-title">سير عمل إطلاق العلامة التجارية</h1>
+                <p class="content-subtitle">تنسيق الفريق للتوسع في السوق المستهدف</p>
+            </div>
+
+            <!-- Phases -->
+            <div class="phases-grid">
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div>
+                            <div class="phase-number">المرحلة ٠١</div>
+                            <h3 class="phase-title">أساس العلامة التجارية</h3>
+                        </div>
+                        <span class="phase-badge badge-progress">جاري العمل</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">تحديد اسم العلامة والشعار</span>
+                            <span class="task-owner">الكل</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">إنشاء دليل العلامة التجارية</span>
+                            <span class="task-owner">سه/هي</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">تصميم تنويعات الشعار</span>
+                            <span class="task-owner">سه/هي</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">تطوير موقع العلامة التجارية</span>
+                            <span class="task-owner">مع</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">تحديد عروض المنتجات</span>
+                            <span class="task-owner">وه</span>
+                        </li>
+                    </ul>
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span class="progress-label">التقدم</span>
+                            <span class="progress-label" id="phase1-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="phase1-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div>
+                            <div class="phase-number">المرحلة ٠٢</div>
+                            <h3 class="phase-title">البناء والإنشاء</h3>
+                        </div>
+                        <span class="phase-badge badge-pending">قيد الانتظار</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">إعداد بيئة التطوير</span>
+                            <span class="task-owner">عز</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">بناء المنتج الأولي</span>
+                            <span class="task-owner">عز</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">إنشاء حسابات التواصل الاجتماعي</span>
+                            <span class="task-owner">سه/هي</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">تطوير تقويم المحتوى</span>
+                            <span class="task-owner">سه/هي</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">إعداد قوائم Flippa</span>
+                            <span class="task-owner">مع</span>
+                        </li>
+                    </ul>
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span class="progress-label">التقدم</span>
+                            <span class="progress-label" id="phase2-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="phase2-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div>
+                            <div class="phase-number">المرحلة ٠٣</div>
+                            <h3 class="phase-title">الإطلاق والتوسع</h3>
+                        </div>
+                        <span class="phase-badge badge-pending">قيد الانتظار</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">نشر خوادم الإنتاج</span>
+                            <span class="task-owner">عز</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">إطلاق حملة التواصل الاجتماعي</span>
+                            <span class="task-owner">سه/هي</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">تفعيل قوائم Flippa</span>
+                            <span class="task-owner">مع</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">مراقبة مؤشرات الأداء</span>
+                            <span class="task-owner">وه</span>
+                        </li>
+                        <li class="task-item" onclick="toggleTask(this)">
+                            <div class="task-checkbox"></div>
+                            <span class="task-text">التحسين بناءً على الملاحظات</span>
+                            <span class="task-owner">الكل</span>
+                        </li>
+                    </ul>
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span class="progress-label">التقدم</span>
+                            <span class="progress-label" id="phase3-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="phase3-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider">
+                <span>مسؤوليات الفريق</span>
+            </div>
+
+            <div class="roles-grid">
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-avatar wahab">وه</div>
+                        <div>
+                            <div class="role-name">وهاب</div>
+                            <div class="role-title">مدير المنتج</div>
+                        </div>
+                    </div>
+                    <ul class="role-responsibilities">
+                        <li>تحديد استراتيجية المنتج وخارطة الطريق</li>
+                        <li>تنسيق أنشطة الفريق</li>
+                        <li>اتخاذ قرارات العمل الرئيسية</li>
+                        <li>تتبع مؤشرات الأداء والنجاح</li>
+                        <li>الموافقة على جميع التسليمات الرئيسية</li>
+                    </ul>
+                </div>
+
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-avatar azeddine">عز</div>
+                        <div>
+                            <div class="role-name">عز الدين</div>
+                            <div class="role-title">تقني</div>
+                        </div>
+                    </div>
+                    <ul class="role-responsibilities">
+                        <li>بناء منتجات SaaS</li>
+                        <li>تطوير المواقع والتطبيقات</li>
+                        <li>إعداد البنية التحتية</li>
+                        <li>التوثيق التقني</li>
+                    </ul>
+                </div>
+
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-avatar sohir">سه</div>
+                        <div>
+                            <div class="role-name">سهير</div>
+                            <div class="role-title">قائدة الإبداع</div>
+                        </div>
+                    </div>
+                    <ul class="role-responsibilities">
+                        <li>قيادة تصميم هوية العلامة</li>
+                        <li>إنشاء الإرشادات البصرية</li>
+                        <li>تصميم محتوى التواصل الاجتماعي</li>
+                        <li>الإشراف على التوجه الإبداعي</li>
+                        <li>مراقبة جودة المرئيات</li>
+                    </ul>
+                </div>
+
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-avatar hythem">هي</div>
+                        <div>
+                            <div class="role-name">هيثم</div>
+                            <div class="role-title">صانع المحتوى</div>
+                        </div>
+                    </div>
+                    <ul class="role-responsibilities">
+                        <li>إنشاء محتوى التواصل الاجتماعي</li>
+                        <li>كتابة نصوص جذابة</li>
+                        <li>إدارة تقويم المحتوى</li>
+                        <li>دعم عمل هوية العلامة</li>
+                        <li>إنتاج محتوى الفيديو</li>
+                    </ul>
+                </div>
+
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-avatar meamar">مع</div>
+                        <div>
+                            <div class="role-name">معمار</div>
+                            <div class="role-title">المبيعات والعلامة التجارية</div>
+                        </div>
+                    </div>
+                    <ul class="role-responsibilities">
+                        <li>بيع المنتجات على Flippa</li>
+                        <li>تطوير موقع العلامة التجارية</li>
+                        <li>إنشاء نصوص المبيعات والعروض</li>
+                        <li>أبحاث وتحليل السوق</li>
+                        <li>دعم استراتيجية التسويق</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section-divider">
+                <span>الجدول الأسبوعي</span>
+            </div>
+
+            <div class="schedule-grid">
+                <div class="schedule-day">
+                    <div class="day-name">الإثنين</div>
+                    <div class="day-label">تحديثات</div>
+                </div>
+                <div class="schedule-day">
+                    <div class="day-name">الثلاثاء</div>
+                    <div class="day-label">تحديثات</div>
+                </div>
+                <div class="schedule-day meeting">
+                    <div class="day-name">الأربعاء</div>
+                    <div class="day-label">اجتماع الفريق</div>
+                </div>
+                <div class="schedule-day">
+                    <div class="day-name">الخميس</div>
+                    <div class="day-label">تحديثات</div>
+                </div>
+                <div class="schedule-day">
+                    <div class="day-name">الجمعة</div>
+                    <div class="day-label">تحديثات</div>
+                </div>
+                <div class="schedule-day">
+                    <div class="day-name">السبت</div>
+                    <div class="day-label">اختياري</div>
+                </div>
+                <div class="schedule-day">
+                    <div class="day-name">الأحد</div>
+                    <div class="day-label">راحة</div>
+                </div>
+            </div>
+
+            <div class="meeting-card">
+                <h4 class="meeting-title">اجتماع الفريق الأسبوعي</h4>
+                <div class="meeting-detail">
+                    <span>اليوم</span>
+                    <span>الأربعاء</span>
+                </div>
+                <div class="meeting-detail">
+                    <span>المدة</span>
+                    <span>٣٠-٦٠ دقيقة</span>
+                </div>
+                <div class="meeting-detail">
+                    <span>جدول الأعمال</span>
+                    <span>تحديثات التقدم، العوائق، الأولويات</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p class="footer-text">لوحة سير عمل الفريق • مبنية للنجاح</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleTask(element) {
+            const checkbox = element.querySelector('.task-checkbox');
+            checkbox.classList.toggle('checked');
+            element.classList.toggle('completed');
+            updateProgress();
+            saveState();
+        }
+
+        function updateProgress() {
+            const phases = document.querySelectorAll('.phase-card');
+            phases.forEach((phase, index) => {
+                const tasks = phase.querySelectorAll('.task-item');
+                const completed = phase.querySelectorAll('.task-item.completed');
+                const percent = Math.round((completed.length / tasks.length) * 100);
+
+                document.getElementById(`phase${index + 1}-percent`).textContent = `${percent}%`;
+                document.getElementById(`phase${index + 1}-bar`).style.width = `${percent}%`;
+
+                // Update badge
+                const badge = phase.querySelector('.phase-badge');
+                if (percent === 100) {
+                    badge.className = 'phase-badge badge-complete';
+                    badge.textContent = 'مكتمل';
+                } else if (percent > 0) {
+                    badge.className = 'phase-badge badge-progress';
+                    badge.textContent = 'جاري العمل';
+                } else {
+                    badge.className = 'phase-badge badge-pending';
+                    badge.textContent = 'قيد الانتظار';
+                }
+            });
+        }
+
+        function saveState() {
+            const tasks = document.querySelectorAll('.task-item');
+            const state = [];
+            tasks.forEach((task, index) => {
+                state.push(task.classList.contains('completed'));
+            });
+            localStorage.setItem('teamDashboardStateAr', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('teamDashboardStateAr');
+            if (saved) {
+                const state = JSON.parse(saved);
+                const tasks = document.querySelectorAll('.task-item');
+                tasks.forEach((task, index) => {
+                    if (state[index]) {
+                        task.classList.add('completed');
+                        task.querySelector('.task-checkbox').classList.add('checked');
+                    }
+                });
+                updateProgress();
+            }
+        }
+
+        // Load saved state on page load
+        loadState();
+    </script>
+</body>
+</html>
