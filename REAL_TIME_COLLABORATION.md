@@ -50,7 +50,7 @@ Your platform knows about these team members:
 | **Azeddine** | عز الدين | Tech | Tech |
 | **Sohair** | سهير | Creative Lead | Brand & Content |
 | **Hythem** | هيثم | Content Creator | Brand & Content |
-| **Meamar** | معمار | Sales & Branding | Sales + Brand |
+| **Meamar** | معمر | Sales & Branding | Sales + Brand |
 
 *These appear in task assignments and user attribution*
 

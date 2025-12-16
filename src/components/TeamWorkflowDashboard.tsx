@@ -84,7 +84,7 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "meamar",
     name: "Meamar",
-    nameAr: "معمار",
+    nameAr: "معمر",
     initials: "مع",
     role: "Sales & Branding",
     roleAr: "المبيعات والعلامة التجارية",

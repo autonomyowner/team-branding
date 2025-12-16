@@ -62,7 +62,7 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "meamar",
     name: "Meamar",
-    nameAr: "معمار",
+    nameAr: "معمر",
     email: "meamar@brandingteam.app",
     role: "Sales & Branding",
     roleAr: "المبيعات والعلامة التجارية",
