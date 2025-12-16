@@ -74,7 +74,7 @@ export function useCanvasData(roomId?: string) {
     // Optimistic update
     setLocalNodes(prev => [...prev, node]);
     // Persist to Convex
-    await addNodeMutation({ roomId: room, node, userName });
+    await addNodeMutation({ roomId: room, node, editedBy: userName });
   }, [addNodeMutation, room, userName]);
 
   const updateNode = useCallback(async (
@@ -86,14 +86,14 @@ export function useCanvasData(roomId?: string) {
       prev.map(n => n.id === nodeId ? { ...n, ...updates } : n)
     );
     // Persist to Convex
-    await updateNodeMutation({ roomId: room, nodeId, updates, userName });
+    await updateNodeMutation({ roomId: room, nodeId, updates, editedBy: userName });
   }, [updateNodeMutation, room, userName]);
 
   const deleteNode = useCallback(async (nodeId: string) => {
     // Optimistic update
     setLocalNodes(prev => prev.filter(n => n.id !== nodeId));
     // Persist to Convex
-    await deleteNodeMutation({ roomId: room, nodeId, userName });
+    await deleteNodeMutation({ roomId: room, nodeId, editedBy: userName });
   }, [deleteNodeMutation, room, userName]);
 
   // ============ CONTAINER OPERATIONS ============
@@ -102,7 +102,7 @@ export function useCanvasData(roomId?: string) {
     // Optimistic update
     setLocalContainers(prev => [...prev, container]);
     // Persist to Convex
-    await addContainerMutation({ roomId: room, container, userName });
+    await addContainerMutation({ roomId: room, container, editedBy: userName });
   }, [addContainerMutation, room, userName]);
 
   const updateContainer = useCallback(async (
@@ -114,26 +114,26 @@ export function useCanvasData(roomId?: string) {
       prev.map(c => c.id === containerId ? { ...c, ...updates } : c)
     );
     // Persist to Convex
-    await updateContainerMutation({ roomId: room, containerId, updates, userName });
+    await updateContainerMutation({ roomId: room, containerId, updates, editedBy: userName });
   }, [updateContainerMutation, room, userName]);
 
   const deleteContainer = useCallback(async (containerId: string) => {
     // Optimistic update
     setLocalContainers(prev => prev.filter(c => c.id !== containerId));
     // Persist to Convex
-    await deleteContainerMutation({ roomId: room, containerId, userName });
+    await deleteContainerMutation({ roomId: room, containerId, editedBy: userName });
   }, [deleteContainerMutation, room, userName]);
 
   // ============ BATCH OPERATIONS (for drag end) ============
 
   const batchUpdateNodes = useCallback(async (nodes: CanvasNode[]) => {
     setLocalNodes(nodes);
-    await batchUpdateNodesMutation({ roomId: room, nodes, userName });
+    await batchUpdateNodesMutation({ roomId: room, nodes, editedBy: userName });
   }, [batchUpdateNodesMutation, room, userName]);
 
   const batchUpdateContainers = useCallback(async (containers: CanvasContainer[]) => {
     setLocalContainers(containers);
-    await batchUpdateContainersMutation({ roomId: room, containers, userName });
+    await batchUpdateContainersMutation({ roomId: room, containers, editedBy: userName });
   }, [batchUpdateContainersMutation, room, userName]);
 
   // ============ VIEWPORT (local only - not synced) ============
@@ -179,8 +179,8 @@ export function useCanvasData(roomId?: string) {
 
   // Sync nodes to Convex after drag ends
   const syncToConvex = useCallback(async () => {
-    await batchUpdateNodesMutation({ roomId: room, nodes: localNodes, userName });
-    await batchUpdateContainersMutation({ roomId: room, containers: localContainers, userName });
+    await batchUpdateNodesMutation({ roomId: room, nodes: localNodes, editedBy: userName });
+    await batchUpdateContainersMutation({ roomId: room, containers: localContainers, editedBy: userName });
     setIsDragging(false);
   }, [batchUpdateNodesMutation, batchUpdateContainersMutation, room, localNodes, localContainers, userName]);
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import TeamWorkflowDashboard from "@/components/TeamWorkflowDashboard";
+import Canvas from "@/components/Canvas";
 import styles from "./dashboard-home.module.css";
 
 type ViewMode = "workflow" | "canvas";
@@ -68,29 +69,7 @@ export default function DashboardPage() {
   );
 }
 
-// Canvas View Component (existing canvas functionality)
+// Canvas View Component - Real-time collaborative canvas
 function CanvasView() {
-  return (
-    <div className={styles.canvasPlaceholder}>
-      <div className={styles.canvasMessage}>
-        <h2>لوحة العمل</h2>
-        <p>لوحة تعاونية للتخطيط البصري والعصف الذهني</p>
-        <div className={styles.canvasFeatures}>
-          <div className={styles.feature}>
-            <span className={styles.featureDot} style={{ backgroundColor: "#00fff2" }} />
-            <span>المهام</span>
-          </div>
-          <div className={styles.feature}>
-            <span className={styles.featureDot} style={{ backgroundColor: "#ffa502" }} />
-            <span>الملاحظات</span>
-          </div>
-          <div className={styles.feature}>
-            <span className={styles.featureDot} style={{ backgroundColor: "#7bed9f" }} />
-            <span>الإنجازات</span>
-          </div>
-        </div>
-        <p className={styles.hint}>استخدم اللوحة الجانبية لإضافة العناصر والحاويات</p>
-      </div>
-    </div>
-  );
+  return <Canvas />;
 }

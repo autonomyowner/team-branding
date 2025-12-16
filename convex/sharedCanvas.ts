@@ -87,9 +87,9 @@ export const addNode = mutation({
   args: {
     roomId: v.optional(v.string()),
     node: nodeValidator,
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, node, userName }) => {
+  handler: async (ctx, { roomId, node, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     let canvas = await ctx.db
@@ -105,7 +105,7 @@ export const addNode = mutation({
         containers: [],
         viewport: { x: 0, y: 0, zoom: 1 },
         version: 1,
-        lastEditedBy: userName,
+        lastEditedBy: editedBy,
       });
       return;
     }
@@ -113,7 +113,39 @@ export const addNode = mutation({
     await ctx.db.patch(canvas._id, {
       nodes: [...canvas.nodes, node],
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
+    });
+  },
+});
+
+// Update node position (optimized for drag)
+export const updateNodePosition = mutation({
+  args: {
+    roomId: v.optional(v.string()),
+    nodeId: v.string(),
+    position: v.object({ x: v.number(), y: v.number() }),
+    editedBy: v.optional(v.string()),
+  },
+  handler: async (ctx, { roomId, nodeId, position, editedBy }) => {
+    const room = roomId || DEFAULT_ROOM;
+
+    const canvas = await ctx.db
+      .query("sharedCanvas")
+      .withIndex("by_room", (q) => q.eq("roomId", room))
+      .first();
+
+    if (!canvas) {
+      throw new Error("Canvas not found");
+    }
+
+    const updatedNodes = canvas.nodes.map((n) =>
+      n.id === nodeId ? { ...n, position } : n
+    );
+
+    await ctx.db.patch(canvas._id, {
+      nodes: updatedNodes,
+      version: canvas.version + 1,
+      lastEditedBy: editedBy,
     });
   },
 });
@@ -130,9 +162,9 @@ export const updateNode = mutation({
       color: v.optional(v.string()),
       assignee: v.optional(v.string()),
     }),
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, nodeId, updates, userName }) => {
+  handler: async (ctx, { roomId, nodeId, updates, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     const canvas = await ctx.db
@@ -151,7 +183,7 @@ export const updateNode = mutation({
     await ctx.db.patch(canvas._id, {
       nodes: updatedNodes,
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
     });
   },
 });
@@ -161,9 +193,9 @@ export const deleteNode = mutation({
   args: {
     roomId: v.optional(v.string()),
     nodeId: v.string(),
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, nodeId, userName }) => {
+  handler: async (ctx, { roomId, nodeId, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     const canvas = await ctx.db
@@ -180,7 +212,7 @@ export const deleteNode = mutation({
     await ctx.db.patch(canvas._id, {
       nodes: updatedNodes,
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
     });
   },
 });
@@ -190,9 +222,9 @@ export const addContainer = mutation({
   args: {
     roomId: v.optional(v.string()),
     container: containerValidator,
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, container, userName }) => {
+  handler: async (ctx, { roomId, container, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     let canvas = await ctx.db
@@ -207,7 +239,7 @@ export const addContainer = mutation({
         containers: [container],
         viewport: { x: 0, y: 0, zoom: 1 },
         version: 1,
-        lastEditedBy: userName,
+        lastEditedBy: editedBy,
       });
       return;
     }
@@ -215,7 +247,7 @@ export const addContainer = mutation({
     await ctx.db.patch(canvas._id, {
       containers: [...canvas.containers, container],
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
     });
   },
 });
@@ -231,9 +263,9 @@ export const updateContainer = mutation({
       position: v.optional(v.object({ x: v.number(), y: v.number() })),
       size: v.optional(v.object({ width: v.number(), height: v.number() })),
     }),
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, containerId, updates, userName }) => {
+  handler: async (ctx, { roomId, containerId, updates, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     const canvas = await ctx.db
@@ -252,7 +284,7 @@ export const updateContainer = mutation({
     await ctx.db.patch(canvas._id, {
       containers: updatedContainers,
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
     });
   },
 });
@@ -262,9 +294,9 @@ export const deleteContainer = mutation({
   args: {
     roomId: v.optional(v.string()),
     containerId: v.string(),
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, containerId, userName }) => {
+  handler: async (ctx, { roomId, containerId, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     const canvas = await ctx.db
@@ -283,7 +315,7 @@ export const deleteContainer = mutation({
     await ctx.db.patch(canvas._id, {
       containers: updatedContainers,
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
     });
   },
 });
@@ -293,9 +325,9 @@ export const batchUpdateNodes = mutation({
   args: {
     roomId: v.optional(v.string()),
     nodes: v.array(nodeValidator),
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, nodes, userName }) => {
+  handler: async (ctx, { roomId, nodes, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     let canvas = await ctx.db
@@ -310,7 +342,7 @@ export const batchUpdateNodes = mutation({
         containers: [],
         viewport: { x: 0, y: 0, zoom: 1 },
         version: 1,
-        lastEditedBy: userName,
+        lastEditedBy: editedBy,
       });
       return;
     }
@@ -318,7 +350,7 @@ export const batchUpdateNodes = mutation({
     await ctx.db.patch(canvas._id, {
       nodes,
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
     });
   },
 });
@@ -328,9 +360,9 @@ export const batchUpdateContainers = mutation({
   args: {
     roomId: v.optional(v.string()),
     containers: v.array(containerValidator),
-    userName: v.optional(v.string()),
+    editedBy: v.optional(v.string()),
   },
-  handler: async (ctx, { roomId, containers, userName }) => {
+  handler: async (ctx, { roomId, containers, editedBy }) => {
     const room = roomId || DEFAULT_ROOM;
 
     let canvas = await ctx.db
@@ -345,7 +377,7 @@ export const batchUpdateContainers = mutation({
         containers,
         viewport: { x: 0, y: 0, zoom: 1 },
         version: 1,
-        lastEditedBy: userName,
+        lastEditedBy: editedBy,
       });
       return;
     }
@@ -353,7 +385,7 @@ export const batchUpdateContainers = mutation({
     await ctx.db.patch(canvas._id, {
       containers,
       version: canvas.version + 1,
-      lastEditedBy: userName,
+      lastEditedBy: editedBy,
     });
   },
 });
